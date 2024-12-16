@@ -1,27 +1,20 @@
 package com.hamitmizrak.innova_springboot.runner;
 
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 // LOMBOK
-//@Log4j2
+@Log4j2
 
 @Order(1) // İlk bu class CommandLineRunner olarak çalışsın
-@Configuration // for Bean Configuration
-public class _1_DataSet {
+@Component //Bu nesnesin bir Spring Framework'un bir parçası olmasını sağlayacağım
+public class _1_DataSet implements CommandLineRunner {
 
-    private void address(){
-        System.out.println("Address -1");
-        //log.info("Address -1");
-    }
-
-    @Bean
-    public CommandLineRunner getDataSet1(){
-        return args -> {
-            address();
-        };
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("Project Data set -1 ");
     }
 }
