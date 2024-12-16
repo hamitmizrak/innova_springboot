@@ -10,7 +10,7 @@ import org.springframework.core.annotation.Order;
 //@Log4j2
 
 @Order(1) // İlk bu class CommandLineRunner olarak çalışsın
-@Configuration
+@Configuration // for Bean Configuration
 public class _1_DataSet {
 
     private void address(){
