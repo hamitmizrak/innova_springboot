@@ -16,5 +16,6 @@ public class _1_DataSet implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Project Data set -1 ");
+        log.info("Project Data set -1 ");
     }
 }

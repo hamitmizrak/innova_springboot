@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.3.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -33,13 +33,12 @@
     </scm>
 
     <!--
-   war: java EE için kullanalım. JSP,servlet,html,css3 etc
-   jar: Spring Boot için kullanalım
-   -->
-    <!--apache tomcat manuel için war ekliyorum-->
-    <packaging>jar</packaging>
-    <!--<packaging>war</packaging>
+    war: java EE için kullanalım. JSP,servlet,html,css3
+    jar: Spring Boot için kullanalım
     -->
+    <!--apache tomcat manuel için war ekliyorum-->
+    <!--<packaging>war</packaging>-->
+    <packaging>jar</packaging>
 
     <!--properties-->
     <properties>
@@ -50,7 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Microservice or, Jenkins - SonarQube - Ve Maven İçin Gerekli-->
+        <!--Jenkins - SonarQube - Ve Maven İçin Gerekli-->
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -65,41 +64,38 @@
     <dependencies>
 
         <!-- #### REDIS #################################################  -->
-        <!-- Spring Boot Redis Starter -->
-        <!--<dependency>
+        <!--
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>-->
+        </dependency>
 
-        <!-- Spring Boot Starter Cache -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>-->
+        </dependency>
 
-        <!-- Redis için, Jackson (JSON için) -->
-        <!--<dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>-->
+        </dependency>
 
-        <!-- Redis için, Lettuce -->
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.lettuce.core</groupId>
-                    <artifactId>lettuce-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-data-redis</artifactId>
+           <exclusions>
+               <exclusion>
+                   <groupId>io.lettuce.core</groupId>
+                   <artifactId>lettuce-core</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
 
-        <!-- Redis için, Jedis -->
-       <!-- <dependency>
+        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-        </dependency>-->
+        </dependency>
+        -->
 
         <!-- #### ÖNEMLİ KÜTÜPHANLER #################################################  -->
         <!-- E MAİL-->
@@ -142,7 +138,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!--processor-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -245,11 +240,11 @@
         </dependency>
 
         <!-- RDBMS Mssql-->
-        <!--<dependency>
+        <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
-        </dependency>-->
+        </dependency>
 
         <!-- RDBMS MYSQL-->
         <dependency>
@@ -259,11 +254,11 @@
         </dependency>
 
         <!-- RDBMS Postgresql-->
-        <!--<dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>-->
+        </dependency>
 
         <!--Mongo DB Kalıcı veri-->
         <!--<dependency>
@@ -356,31 +351,6 @@
         <finalName>${project.artifactId}</finalName>
 
         <plugins>
-            <!-- for maven target 17: SonarQube 11 veya 17 yapmalısınız -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <!-- redis için ekledim -->
-                    <!--<compilerArgs>
-                        <arg>-parameters</arg>
-                    </compilerArgs>-->
-
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-configuration-processor</artifactId>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -395,4 +365,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
