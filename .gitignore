@@ -1,5 +1,7 @@
 # Special
 frontend/
+log/
+database_memory_persist/
 
 HELP.md
 target/
