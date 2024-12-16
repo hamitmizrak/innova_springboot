@@ -13,11 +13,19 @@ git push -u master
 
 git status
 git log
+
+git pull
+git pull origin master
+
 ```
 ---
 
-## Spring
-```sh 
+## Permalink
+```sh
+    http://localhost:4444
+    http://localhost:4444/h2-console
+    http://localhost:4444/swagger-ui/index.html
+    http://localhost:4444/actuator/health
 ```
 ---
 
