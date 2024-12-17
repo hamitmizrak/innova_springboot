@@ -2,6 +2,12 @@ package com.hamitmizrak.innova_springboot.business.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+// LOMBOK
+@Getter
+@Setter
 
 //
 public class AddressDto extends BaseDto {

@@ -1,9 +1,12 @@
 package com.hamitmizrak.innova_springboot.business.services.impl;
 
+import com.hamitmizrak.innova_springboot.bean.ModelMapperBean;
 import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
 import com.hamitmizrak.innova_springboot.business.services.interfaces.IAddressService;
 import com.hamitmizrak.innova_springboot.data.entity.AddressEntity;
+import com.hamitmizrak.innova_springboot.data.repository.IAddressRepository;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +20,15 @@ import java.util.List;
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Builder
+@RequiredArgsConstructor
 
 //Service:  Asıl İş Yükünü yapan bean
 @Service
 public class AddresServiceImpl implements IAddressService<AddressDto, AddressEntity> {
 
     // INJECTION
+    private final IAddressRepository iAddressRepository;
+    private final ModelMapperBean modelMapperBean;
 
 
     // Model Mapper
