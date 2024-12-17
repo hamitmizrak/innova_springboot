@@ -10,7 +10,7 @@ import lombok.Setter;
 
 // Gömülü Sınıf: Entity Classlarında daha sade ve karmaşıklıktan uzak tutmak için
 @Embeddable
-public class AddressDetailsEmbedable {
+public class AddresseEntityDetailsEmbedable {
 
     // DOOR NUMBER
     @Column(

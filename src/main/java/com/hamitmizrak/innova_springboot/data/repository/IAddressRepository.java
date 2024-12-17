@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface IAddressRepository extends JpaRepository<AddressEntity,Long> {
 
     // Delivered Query
-    Optional<AddressEntity> findAdressEntitiesByAddressDetailsEmbedable_AddressQrCode  (String qrCode);
+    Optional<AddressEntity> findAdressEntitiesByAddresseEntityDetailsEmbedable_AddressQrCode(String qrCode);
 
     // JPQL
     // Native Query

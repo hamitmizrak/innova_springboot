@@ -3,21 +3,20 @@ package com.hamitmizrak.innova_springboot.business.services.impl;
 import com.hamitmizrak.innova_springboot.bean.ModelMapperBean;
 import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
 import com.hamitmizrak.innova_springboot.business.services.interfaces.IAddressService;
-import com.hamitmizrak.innova_springboot.data.embedded.AddressDetailsEmbedable;
+import com.hamitmizrak.innova_springboot.data.embedded.AddresseEntityDetailsEmbedable;
 import com.hamitmizrak.innova_springboot.data.entity.AddressEntity;
 import com.hamitmizrak.innova_springboot.data.mapper.AddressMapper;
 import com.hamitmizrak.innova_springboot.data.repository.IAddressRepository;
 import com.hamitmizrak.innova_springboot.exception._404_NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.*;
-import org.modelmapper.ModelMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 //@NoArgsConstructor
 //@Builder
 @RequiredArgsConstructor
+@Log4j2
 
 //Service:  Asıl İş Yükünü yapan bean
 @Service
@@ -99,7 +99,7 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
         AddressEntity addressEntityFindByUpdate= dtoToEntity(objectServiceFindById(id));
 
         // Embeddable
-        AddressDetailsEmbedable addressDetailsEmbedableUpdate= new AddressDetailsEmbedable();
+        AddresseEntityDetailsEmbedable addressDetailsEmbedableUpdate= new AddresseEntityDetailsEmbedable();
         addressDetailsEmbedableUpdate.setAddressQrCode(addressDto.getAddressQrCode());
         addressDetailsEmbedableUpdate.setCity(addressDto.getCity());
         addressDetailsEmbedableUpdate.setState(addressDto.getState());
@@ -145,15 +145,23 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
                 .collect(Collectors.toList());
     }
 
-    // SORTING (ASC)
+    // SORTING (CITY ASC)
     @Override
     public List<AddressDto> objectServiceListSortedByAsc() {
-        return List.of();
+        // Dikkat: Eğer Embedable olmasaydı `city` yazsak yeterdi ancak `addresseEntityDetailsEmbedable.city` yazmalıyız
+        return iAddressRepository.findAll(Sort.by(Sort.Direction.ASC,"addresseEntityDetailsEmbedable.city"))
+                .stream()
+                .map(AddressMapper::AddressEntityToAddressDto)
+                .collect(Collectors.toList());
     }
 
-    // SORTING (DESC)
+    // SORTING (CITY DESC)
     @Override
     public List<AddressDto> objectServiceListSortedByDesc() {
-        return List.of();
+        // Dikkat: Eğer Embedable olmasaydı `city` yazsak yeterdi ancak `addresseEntityDetailsEmbedable.city` yazmalıyız
+        return iAddressRepository.findAll(Sort.by(Sort.Direction.DESC,"addresseEntityDetailsEmbedable.city"))
+                .stream()
+                .map(AddressMapper::AddressEntityToAddressDto)
+                .collect(Collectors.toList());
     }
-}
+} //end AddresServiceImpl

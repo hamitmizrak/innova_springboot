@@ -1,7 +1,7 @@
 package com.hamitmizrak.innova_springboot.data.mapper;
 
 import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
-import com.hamitmizrak.innova_springboot.data.embedded.AddressDetailsEmbedable;
+import com.hamitmizrak.innova_springboot.data.embedded.AddresseEntityDetailsEmbedable;
 import com.hamitmizrak.innova_springboot.data.entity.AddressEntity;
 
 public class AddressMapper {
@@ -17,7 +17,7 @@ public class AddressMapper {
 
         // Embedable içi doluysa
         if(addressEntity.getAddressDetailsEmbedable() != null){
-            AddressDetailsEmbedable addressDetailsEmbedable = addressEntity.getAddressDetailsEmbedable();
+            AddresseEntityDetailsEmbedable addressDetailsEmbedable = addressEntity.getAddressDetailsEmbedable();
             addressDto.setDoorNumber(addressDetailsEmbedable.getDoorNumber());
             addressDto.setStreet(addressDetailsEmbedable.getStreet());
             addressDto.setAvenue(addressDetailsEmbedable.getAvenue());
@@ -41,7 +41,7 @@ public class AddressMapper {
         addressEntity.setSystemCreatedDate(addressDto.getSystemCreatedDate());
 
         // Embeddable
-        AddressDetailsEmbedable addressDetailsEmbedable = new AddressDetailsEmbedable();
+        AddresseEntityDetailsEmbedable addressDetailsEmbedable = new AddresseEntityDetailsEmbedable();
         addressDetailsEmbedable.setDoorNumber(addressDto.getDoorNumber());
         addressDetailsEmbedable.setStreet(addressDto.getStreet());
         addressDetailsEmbedable.setAvenue(addressDto.getAvenue());

@@ -1,6 +1,6 @@
 package com.hamitmizrak.innova_springboot.data.entity;
 
-import com.hamitmizrak.innova_springboot.data.embedded.AddressDetailsEmbedable;
+import com.hamitmizrak.innova_springboot.data.embedded.AddresseEntityDetailsEmbedable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,8 +22,9 @@ public class AddressEntity extends BaseEntity{
     // FIELD
 
     // Embedded
+    // Dikkat: Sorting için burada yazan: addresseEntityDetailsEmbedable göre işlem yapılır
     @Embedded
-    private AddressDetailsEmbedable addressDetailsEmbedable;
+    private AddresseEntityDetailsEmbedable addresseEntityDetailsEmbedable;
 
     // RELATION
 }
