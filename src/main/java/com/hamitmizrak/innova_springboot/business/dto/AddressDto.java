@@ -1,7 +1,9 @@
 package com.hamitmizrak.innova_springboot.business.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
+//
 public class AddressDto extends BaseDto {
 
     // DOOR NUMBER
@@ -30,6 +32,7 @@ public class AddressDto extends BaseDto {
 
     // DESCRIPTION
     @NotEmpty(message = "{address.description.validation.constraints.NotNull.message}")
+    @Size(min = 5, message = "{address.description.least.validation.constraints.NotNull.message}")
     private String description;
 
     // ADDRESS QR CODE
