@@ -110,26 +110,43 @@ public class AddressApiImpl implements IAddressApi<AddressDto> {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    // PAGING
+    // PAGINATION
+    // 1.sayfada 4 tane veri getir
+    // http://localhost:4444/api/address/v1.0.0/pagination?current_page=0&page_size=3
     @Override
-    public ResponseEntity<Page<?>> objectServicePagination(int currentPage, int pageSize) {
+    @GetMapping(value = "/pagination")
+    public ResponseEntity<Page<?>> objectServicePagination(
+           @RequestParam(name="current_page",required = false,defaultValue = "0") int currentPage,
+           @RequestParam(name="page_size",required = false,defaultValue = "5")  int pageSize) {
         return ResponseEntity.ok(iAddressService.objectServicePagination(currentPage, pageSize));
     }
 
     // SORTING (Belli kolona göre)
+    // http://localhost:4444/api/address/v1.0.0/sorting?sorted_by=addresseEntityDetailsEmbedable.city
+    // http://localhost:4444/api/address/v1.0.0/sorting?sorted_by=addresseEntityDetailsEmbedable.state
+    // http://localhost:4444/api/address/v1.0.0/sorting?sorted_by=addresseEntityDetailsEmbedable.street
+    // Dikkat: Eğer Embedable olmasaydı `city` yazsak yeterdi ancak `addresseEntityDetailsEmbedable.city` yazmalıyız
     @Override
-    public ResponseEntity<List<AddressDto>> objectServiceListSortedBy(String sortedBy) {
+    @GetMapping(value = "/sorting")
+    public ResponseEntity<List<AddressDto>> objectServiceListSortedBy(
+            @RequestParam(name="sorted_by",required = false,defaultValue = "addresseEntityDetailsEmbedable.city") String sortedBy) {
         return ResponseEntity.ok(iAddressService.objectServiceListSortedBy(sortedBy));
     }
 
     // SORTING ASC
+    // http://localhost:4444/api/address/v1.0.0/sorting/city/asc
+    // Default olarak Address Entity'de Şehire göre Küçükten Büyüğe doğru sıralama yapsın
     @Override
+    @GetMapping(value = "/sorting/city/asc")
     public ResponseEntity<List<AddressDto>> objectServiceListSortedByAsc() {
         return ResponseEntity.ok(iAddressService.objectServiceListSortedByAsc());
     }
 
     // SORTING DESC
+    // http://localhost:4444/api/address/v1.0.0/sorting/city/desc
+    // Default olarak Address Entity'de Şehire göre Büyükten Küçüğe doğru sıralama yapsın
     @Override
+    @GetMapping(value = "/sorting/city/desc")
     public ResponseEntity<List<AddressDto>> objectServiceListSortedByDesc() {
         return ResponseEntity.ok(iAddressService.objectServiceListSortedByDesc());
     }
