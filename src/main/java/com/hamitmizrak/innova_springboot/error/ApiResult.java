@@ -1,17 +1,18 @@
 package com.hamitmizrak.innova_springboot.error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 import java.util.Map;
 
 // LOMBOK
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
+//@NoArgsConstructor
+
 
 // Spring Frameworkun Error mekanizması yerine bizim yazdığımız hata yakalama mekanizması
 // Jackson: Objeyi => json çevirmek
@@ -24,7 +25,7 @@ public class ApiResult {
     private String error;
     private String message;
     private String path;
-    private Map<String,String> validationErrors;
+    private Map<String,Object> validationErrors;
     private Date createdDate = new Date(System.currentTimeMillis());
 
     // Constructor (Parametresiz)
@@ -45,4 +46,6 @@ public class ApiResult {
         this.message = message;
         this.status = status;
     }
+
+
 } //end Class ApiResult
