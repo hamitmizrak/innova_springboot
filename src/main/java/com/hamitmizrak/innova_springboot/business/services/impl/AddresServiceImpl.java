@@ -12,6 +12,9 @@ import jakarta.transaction.Transactional;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -121,21 +124,34 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
 
     ////////////////////////////////////////////////////////////////
     // PAGE & SORT
+
+    // PAGE
     @Override
     public Page<AddressDto> objectServicePagination(int currentPage, int pageSize) {
-        return null;
+        // import org.springframework.data.domain.Pageable;
+        Pageable pageable= PageRequest.of(currentPage, pageSize);
+        Page<AddressDto> addressDtoPage = (Page<AddressDto>) iAddressRepository.findAll(pageable)
+                .stream()
+                .map(AddressMapper::AddressEntityToAddressDto)
+                .collect(Collectors.toList());
+        return addressDtoPage;
     }
 
+    // SORTING (Herhangi bir kolon)
     @Override
     public List<AddressDto> objectServiceListSortedBy(String sortedBy) {
-        return List.of();
+        return iAddressRepository.findAll(Sort.by(Sort.Direction.ASC,sortedBy))
+                .stream().map(AddressMapper::AddressEntityToAddressDto)
+                .collect(Collectors.toList());
     }
 
+    // SORTING (ASC)
     @Override
     public List<AddressDto> objectServiceListSortedByAsc() {
         return List.of();
     }
 
+    // SORTING (DESC)
     @Override
     public List<AddressDto> objectServiceListSortedByDesc() {
         return List.of();
