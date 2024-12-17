@@ -29,6 +29,6 @@ abstract public class BaseEntity extends AuditingAwareBaseEntity implements Seri
     // SYSTEM DATE
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name ="system_created_date" )
+    @Column(name ="system_created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     protected Date systemCreatedDate;
 }
