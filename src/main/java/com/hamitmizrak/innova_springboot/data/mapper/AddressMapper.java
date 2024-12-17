@@ -32,7 +32,7 @@ public class AddressMapper {
     }
 
     // 2- AddressDto'u AddressEntity'e  çevir
-    public static AddressEntity AddressEntityToAddressDto(AddressDto  addressDto){
+    public static AddressEntity AddressDtoToAddressEntity(AddressDto  addressDto){
         // Instance (AddressEntity)
         AddressEntity addressEntity= new AddressEntity();
 

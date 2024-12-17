@@ -7,11 +7,11 @@ import lombok.*;
 // LOMBOK
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+//@ToString
+//@EqualsAndHashCode
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Builder
 
 // Entity
 @Entity(name = "Addreses")
