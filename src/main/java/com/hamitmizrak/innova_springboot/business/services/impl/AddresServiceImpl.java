@@ -8,7 +8,6 @@ import com.hamitmizrak.innova_springboot.data.entity.AddressEntity;
 import com.hamitmizrak.innova_springboot.data.mapper.AddressMapper;
 import com.hamitmizrak.innova_springboot.data.repository.IAddressRepository;
 import com.hamitmizrak.innova_springboot.exception._404_NotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +63,8 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
     // CRUD
 
     // CREATE (Address)
-    @Transactional // () // create, delete, update yani manipulation işlemlerin
+    // org.springframework.transaction
+    @Transactional //(propagation = ) // () // create, delete, update yani manipulation işlemlerin
     @Override
     public AddressDto objectServiceCreate(AddressDto addressDto) {
         AddressEntity addressEntityCreate =dtoToEntity(addressDto);
