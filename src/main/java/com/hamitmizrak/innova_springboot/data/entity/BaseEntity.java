@@ -36,18 +36,17 @@ abstract public class BaseEntity extends AuditingAwareBaseEntity implements Seri
     Taşınabilirlik: JPA'in birden fazla Mysql, Postgresql, Oracle, MariaDB, H2DB vb
     Kontrol: allocationSize başlangıç değer artışını kontrol edebilmek
     */
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_seq")
     @SequenceGenerator(name="address_seq",sequenceName = "address_sequence",allocationSize=1)
-    protected Long id;
+    protected Long id;*/
 
     // 2.YOL
-    /*
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Mysql
-    @GeneratedValue(strategy = GenerationType.AUTO) //Postgresql
+    //@GeneratedValue(strategy = GenerationType.AUTO) //Postgresql
     protected Long id;
-    */
+
 
     // SYSTEM DATE
     @CreationTimestamp

@@ -2,7 +2,9 @@ package com.hamitmizrak.innova_springboot.runner;
 
 
 import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
+import com.hamitmizrak.innova_springboot.business.dto.CustomerDto;
 import com.hamitmizrak.innova_springboot.business.services.interfaces.IAddressService;
+import com.hamitmizrak.innova_springboot.business.services.interfaces.ICustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
@@ -23,9 +25,10 @@ public class _1_DataSet implements CommandLineRunner {
 
     // Injection
     private final IAddressService iAddressService;
+    private final ICustomerService iCustomerService;
 
-    // Address Create
-    private List<AddressDto> addressSave(){
+    // Address Random Create
+    private List<AddressDto> addressRandomSave(){
         List<AddressDto> addressDtoList = new ArrayList<>();
 
         // For Loop
@@ -45,10 +48,47 @@ public class _1_DataSet implements CommandLineRunner {
         return addressDtoList;
     }
 
+    // Address Single Create
+    private AddressDto addressSave(){
+        AddressDto addressDto= new AddressDto();
+        addressDto.setDoorNumber("door number");
+        addressDto.setStreet("street");
+        addressDto.setAvenue("avenue");
+        addressDto.setCity("city");
+        addressDto.setState("state number");
+        addressDto.setZipCode("zip code");
+        addressDto.setDescription("description");
+        addressDto.setAddressQrCode(UUID.randomUUID().toString());
+        return addressDto;
+    }
+
+    // Address Single Create
+    private CustomerDto customerSave(){
+
+        // AddressDto
+        AddressDto addressDto= addressSave();
+
+        // CustomerDto
+        CustomerDto customerDto= new CustomerDto();
+        customerDto.setFistname("Hamit");
+        customerDto.setLastname("Mızrak");
+        customerDto.setNotes("Notes");
+
+        // Composition
+        customerDto.setCompositionAddressDto(addressDto);
+
+        // Customer Save
+        iCustomerService.objectServiceCreate(customerDto);
+        System.out.println(customerDto);
+
+        return customerDto;
+    }
+
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Project Data set -1 ");
         log.info("Project Data set -1 ");
-        addressSave();
+        //addressSave();
+        customerSave();
     }
 }
