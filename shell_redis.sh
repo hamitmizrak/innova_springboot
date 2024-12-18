@@ -25,4 +25,6 @@ mvn spring-boot:run &
 # Eğer bir bağlantı hatası varsa Redis'in çalıştığından emin olun ve Redis sunucusunu başlatın:
 # redis-server
 winpty docker exec -it spring_redis bash
+
+# bu komutu Terminale bağlandıktan sonra ping gönderirilir eğer çalışıyorsa pıng döner
 redis-cli ping
