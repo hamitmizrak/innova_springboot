@@ -94,8 +94,8 @@ public class AddressApiImpl implements IAddressApi<AddressDto> {
     }
 
     // UPDATE
-    // http://localhost:4444/api/address/v1.0.0/find/1
-    @PutMapping({"/update/","/update/id"})
+    // http://localhost:4444/api/address/v1.0.0/update/1
+    @PutMapping({"/update/","/update/{id}"})
     @Override
     public ResponseEntity<?> objectApiUpdate(@PathVariable(name = "id",required = false)  Long id, @Valid @RequestBody AddressDto addressDto) {
         return ResponseEntity.ok(iAddressService.objectServiceUpdate(id, addressDto));

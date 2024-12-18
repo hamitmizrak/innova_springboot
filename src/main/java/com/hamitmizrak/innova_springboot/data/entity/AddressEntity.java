@@ -15,7 +15,7 @@ import lombok.*;
 
 // Entity
 @Entity(name = "Addreses")
-@Table(name = "addreses")
+@Table(name = "addreseses")
 // Address
 public class AddressEntity extends BaseEntity{
 

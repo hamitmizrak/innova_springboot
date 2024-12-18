@@ -240,11 +240,11 @@
         </dependency>
 
         <!-- RDBMS Mssql-->
-        <dependency>
+        <!--<dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
         <!-- RDBMS MYSQL-->
         <dependency>
@@ -254,11 +254,11 @@
         </dependency>
 
         <!-- RDBMS Postgresql-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
         <!--Mongo DB Kalıcı veri-->
         <!--<dependency>

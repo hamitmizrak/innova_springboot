@@ -16,8 +16,8 @@ public class AddressMapper {
         addressDto.setSystemCreatedDate(addressEntity.getSystemCreatedDate());
 
         // Embedable içi doluysa
-        if(addressEntity.getAddressDetailsEmbedable() != null){
-            AddresseEntityDetailsEmbedable addressDetailsEmbedable = addressEntity.getAddressDetailsEmbedable();
+        if(addressEntity.getAddresseEntityDetailsEmbedable() != null){
+            AddresseEntityDetailsEmbedable addressDetailsEmbedable = addressEntity.getAddresseEntityDetailsEmbedable();
             addressDto.setDoorNumber(addressDetailsEmbedable.getDoorNumber());
             addressDto.setStreet(addressDetailsEmbedable.getStreet());
             addressDto.setAvenue(addressDetailsEmbedable.getAvenue());
@@ -49,8 +49,9 @@ public class AddressMapper {
         addressDetailsEmbedable.setState(addressDto.getState());
         addressDetailsEmbedable.setZipCode(addressDto.getZipCode());
         addressDetailsEmbedable.setAddressQrCode(addressDto.getAddressQrCode());
+        addressDetailsEmbedable.setDescription(addressDto.getDescription());
         // AddressEntity içine "Embeddable Set" ekledik
-        addressEntity.setAddressDetailsEmbedable(addressDetailsEmbedable);
+        addressEntity.setAddresseEntityDetailsEmbedable(addressDetailsEmbedable);
 
         return addressEntity;
     }

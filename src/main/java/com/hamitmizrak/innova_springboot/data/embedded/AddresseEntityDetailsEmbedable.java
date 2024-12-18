@@ -15,12 +15,13 @@ public class AddresseEntityDetailsEmbedable {
     // DOOR NUMBER
     @Column(
             name = "door_number",
-            unique = true,
+            //unique = true,
             nullable = false,
             updatable = true,
             insertable = true,
-            length = 255,
-            columnDefinition = "VARCHAR(255) DEFAULT='44'")
+            length = 255
+            //columnDefinition = "VARCHAR(255) DEFAULT='44'"
+    )
     private String doorNumber;
 
     // ZIP CODE
