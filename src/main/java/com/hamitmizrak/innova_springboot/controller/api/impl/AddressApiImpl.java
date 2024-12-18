@@ -63,7 +63,7 @@ public class AddressApiImpl implements IAddressApi<AddressDto> {
         return ResponseEntity.ok(addressDtoList);
     }
 
-// FIND BY ID
+    // FIND BY ID
     // http://localhost:4444/api/address/v1.0.0/find
     // http://localhost:4444/api/address/v1.0.0/find/0
     // http://localhost:4444/api/address/v1.0.0/find/-1
@@ -103,7 +103,7 @@ public class AddressApiImpl implements IAddressApi<AddressDto> {
 
     // DELETE
     // http://localhost:4444/api/address/v1.0.0/delete/1
-    @DeleteMapping({"/delete/","/delete/id"})
+    @DeleteMapping({"/delete/","/delete/{id}"})
     @Override
     public ResponseEntity<?> objectApiDelete(@PathVariable(name = "id",required = false) Long id) {
         return ResponseEntity.ok(iAddressService.objectServiceDelete(id));

@@ -1,5 +1,7 @@
 package com.hamitmizrak.innova_springboot.business.dto;
 
+import com.hamitmizrak.innova_springboot.annotation.AddressUniqueQrCode;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -9,11 +11,13 @@ import lombok.Setter;
 @Getter
 @Setter
 
-//
+// @NotEmpty
+// @NotBlank
 public class AddressDto extends BaseDto {
 
     // DOOR NUMBER
     @NotEmpty(message = "{address.door_number.validation.constraints.NotNull.message}")
+    //@NotBlank(message = "{address.door_number.validation.constraints.NotNull.message}")
     private String doorNumber;
 
     // ZIP CODE
@@ -42,7 +46,8 @@ public class AddressDto extends BaseDto {
     private String description;
 
     // ADDRESS QR CODE
-    @NotEmpty(message = "{address.qr_code.unique.validation.constraints.NotNull.message}")
+    @AddressUniqueQrCode
+    @NotEmpty(message = "{address.qr_code.validation.constraints.NotNull.message}")
     private String addressQrCode;
 
 }
