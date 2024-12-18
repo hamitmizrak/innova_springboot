@@ -63,7 +63,7 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
     // CRUD
 
     // CREATE (Address)
-    @Transactional // create, delete, update yani manipulation işlemlerin
+    @Transactional // () // create, delete, update yani manipulation işlemlerin
     @Override
     public AddressDto objectServiceCreate(AddressDto addressDto) {
         AddressEntity addressEntityCreate =dtoToEntity(addressDto);

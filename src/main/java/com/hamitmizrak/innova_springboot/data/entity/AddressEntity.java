@@ -54,6 +54,17 @@ public class AddressEntity extends BaseEntity{
 
     // Optimistik Kilitlenme (Optimistic Locking)
     // Entity'timizin versiyonlararak saklanması
+    /*
+    Transaction çok uzun süre zarfında açık kalmışsa bu noktada, Version ile çözmeyere çalışırız.
+    Optimistic Locking: Veri tabanında kaydın güncellenmesi sırasında veri tutarlılığını sağlamak istiyorsak
+     buradan @Version kullanırız. Eğer bu kayıdın işlem başlandı ve eşlenme devam etmiyorsa güncelleme reddecek ve bir hata
+     fırlatacak: OptimistikcLockException
+     Çözüm olarak: Optimistic Locking kullanarak temel mekanizmamızda Entity üzerinde yazdığımız @Version alanında tanımlananan,
+     güncelleme işlemlerinde her zaman değeri otomatik artırım sağlarak çözümlenir.
+
+     Select * From Addresses Where id=1;
+     update Addresses SET city="Malatya", version=version+1 where id=1 AND version =1;
+    */
     @Version
     private int version;
 
