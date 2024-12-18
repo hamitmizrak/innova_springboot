@@ -2,7 +2,7 @@
 
 echo "Spring Boot Starting Dockerize"
 
-#chmod +x shell_docker_project.sh
+#chmod +x shell_maven_docker.sh
 #chmod +x shell_manuel_project.sh
 chmod +x shell_countdown.sh
 

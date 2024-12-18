@@ -29,6 +29,461 @@ git pull origin master
 ```
 ---
 
+
+## Spring Boot
+```sh 
+
+```
+---
+
+Spring Data Entity, Java Persistence API (JPA) ile çalışan ve veritabanındaki tabloları Java nesneleri ile eşleştiren sınıflardır. Entity sınıfları, bir tabloyu temsil eder ve veritabanı işlemlerinde kullanılır. Bu sınıflar, JPA tarafından sağlanan çeşitli özellikler ve anotasyonlarla zenginleştirilebilir. İşte Spring Data Entity'nin temel özellikleri ve detaylı açıklamaları:
+
+---
+
+### 1. **@Entity**
+- Bir sınıfın bir veritabanı tablosunu temsil ettiğini belirtir.
+- Bu anotasyon olmadan sınıf bir Entity olarak kabul edilmez.
+
+**Örnek:**
+```java
+@Entity
+public class Customer {
+    @Id
+    private Long id;
+    private String name;
+}
+```
+
+---
+
+### 2. **@Table**
+- Tablo ismini özelleştirmek için kullanılır. Eğer belirtilmezse, sınıf ismi tablo ismi olarak kullanılır.
+- `schema` ve `catalog` gibi özelliklerle şema veya katalog adı belirtebilirsiniz.
+
+**Örnek:**
+```java
+@Entity
+@Table(name = "customers", schema = "public")
+public class Customer {
+    @Id
+    private Long id;
+    private String name;
+}
+```
+
+---
+
+### 3. **@Id**
+- Birincil anahtar (Primary Key) sütununu belirtir.
+- Entity sınıfında bir tane `@Id` alanı olmak zorundadır.
+
+**Örnek:**
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+```
+
+---
+
+### 4. **@GeneratedValue**
+- Birincil anahtarın nasıl oluşturulacağını belirtir.
+- Stratejiler:
+    - `AUTO`: Varsayılan stratejiyi kullanır.
+    - `IDENTITY`: Veritabanının otomatik artan özelliğini kullanır.
+    - `SEQUENCE`: Bir sıra kullanır.
+    - `TABLE`: Bir tablo kullanır.
+
+**Örnek:**
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+@SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", allocationSize = 1)
+private Long id;
+```
+
+---
+
+### 5. **@Column**
+- Sütun özelliklerini tanımlamak için kullanılır.
+- Özellikler:
+    - `name`: Sütun adını belirler.
+    - `nullable`: NULL değer alıp almayacağını belirtir.
+    - `unique`: Benzersiz olup olmadığını belirtir.
+    - `length`: String türü için maksimum uzunluğu belirtir.
+    - `columnDefinition`: Özel bir SQL tanımı sağlar.
+
+**Örnek:**
+```java
+@Column(name = "full_name", nullable = false, length = 50)
+private String name;
+```
+
+---
+
+### 6. **@Transient**
+- Bir alanın veritabanında bir sütun olarak saklanmasını engeller.
+- Bu alan sadece uygulama içinde kullanılabilir.
+
+**Örnek:**
+```java
+@Transient
+private String temporaryData;
+```
+
+---
+
+### 7. **@Enumerated**
+- Enum türündeki bir alanın nasıl saklanacağını belirtir.
+- Türler:
+    - `EnumType.STRING`: Enum ismini saklar.
+    - `EnumType.ORDINAL`: Enum sırasını saklar.
+
+**Örnek:**
+```java
+@Enumerated(EnumType.STRING)
+private Status status;
+```
+
+---
+
+### 8. **@Temporal**
+- Tarih ve saat türündeki alanlar için kullanılır.
+- Türler:
+    - `TemporalType.DATE`: Sadece tarihi saklar.
+    - `TemporalType.TIME`: Sadece saati saklar.
+    - `TemporalType.TIMESTAMP`: Hem tarihi hem de saati saklar.
+
+**Örnek:**
+```java
+@Temporal(TemporalType.TIMESTAMP)
+private Date createdAt;
+```
+
+---
+
+### 9. **@Lob**
+- Büyük verileri (BLOB veya CLOB) saklamak için kullanılır.
+- Metin veya büyük dosyalar gibi veri türlerini saklayabilirsiniz.
+
+**Örnek:**
+```java
+@Lob
+private String description;
+```
+
+---
+
+### 10. **@Embedded ve @Embeddable**
+- Bir sınıfın diğer bir sınıfı gömülü olarak kullanmasını sağlar.
+- `@Embeddable`: Gömülü sınıfı belirtir.
+- `@Embedded`: Gömülü sınıfı kullanan alanı belirtir.
+
+**Örnek:**
+```java
+@Embeddable
+public class Address {
+    private String city;
+    private String state;
+}
+
+@Entity
+public class Customer {
+    @Id
+    private Long id;
+
+    @Embedded
+    private Address address;
+}
+```
+
+---
+
+### 11. **@OneToOne**
+- Birebir ilişkiyi temsil eder.
+- Özellikler:
+    - `mappedBy`: İlişkinin sahibi olan alanı belirtir.
+    - `cascade`: İlişkili nesnelerde işlem kaskadını sağlar.
+
+**Örnek:**
+```java
+@OneToOne(cascade = CascadeType.ALL)
+@JoinColumn(name = "address_id", referencedColumnName = "id")
+private Address address;
+```
+
+---
+
+### 12. **@OneToMany**
+- Bire-çok ilişkiyi temsil eder.
+- Genellikle `mappedBy` özelliği ile ters ilişkiyi tanımlar.
+
+**Örnek:**
+```java
+@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+private List<Order> orders;
+```
+
+---
+
+### 13. **@ManyToOne**
+- Çoktan-bire ilişkiyi temsil eder.
+- `fetch`: Lazy veya Eager yükleme modunu belirtir.
+
+**Örnek:**
+```java
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "customer_id", nullable = false)
+private Customer customer;
+```
+
+---
+
+### 14. **@ManyToMany**
+- Çoktan-çoka ilişkiyi temsil eder.
+- Genellikle bir ara tablo kullanır.
+
+**Örnek:**
+```java
+@ManyToMany
+@JoinTable(
+    name = "student_course",
+    joinColumns = @JoinColumn(name = "student_id"),
+    inverseJoinColumns = @JoinColumn(name = "course_id")
+)
+private List<Course> courses;
+```
+
+---
+
+### 15. **@MappedSuperclass**
+- Ortak özelliklerin diğer Entity sınıflarına miras bırakılması için kullanılır.
+- Kendisi bir tablo oluşturmaz.
+
+**Örnek:**
+```java
+@MappedSuperclass
+public abstract class BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+}
+```
+
+---
+
+### 16. **@Inheritance**
+- Kalıtım kullanılan Entity sınıflarını belirler.
+- Stratejiler:
+    - `SINGLE_TABLE`: Tek bir tablo kullanır.
+    - `TABLE_PER_CLASS`: Her alt sınıf için ayrı bir tablo oluşturur.
+    - `JOINED`: Alt sınıflar arasında birleştirilmiş bir tablo oluşturur.
+
+**Örnek:**
+```java
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Person {
+    @Id
+    private Long id;
+    private String name;
+}
+```
+
+---
+
+### 17. **@Version**
+- Bir alanın Entity'nin versiyonunu saklamasını sağlar.
+- Genellikle optimistik kilitleme (Optimistic Locking) için kullanılır.
+
+**Örnek:**
+```java
+@Version
+private int version;
+```
+
+---
+
+Bu özellikler ve anotasyonlar, Spring Data Entity'lerde en çok kullanılan ve önemli detaylardır. Spring Data JPA ile çalışırken doğru bir modelleme yapmak için bu özelliklerin nasıl kullanıldığını anlamak kritiktir. Daha fazla özelleştirme gerektiğinde, JPA spesifikasyonu veya Hibernate özellikleri kullanılabilir.
+
+
+
+## Spring Boot
+```sh 
+
+```
+---
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+@SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", allocationSize = 1)
+private Long id;
+Bu kod parçası, bir Entity sınıfındaki birincil anahtarın (Primary Key) nasıl oluşturulacağını detaylı bir şekilde açıklayan bir yapı sunar. Bu yapı, JPA (Java Persistence API) tarafından desteklenen **@Id**, **@GeneratedValue**, ve **@SequenceGenerator** anotasyonlarını içerir. Bu açıklamalarda her bir bileşeni detaylı bir şekilde ele alacağım.
+
+---
+
+### **1. @Id**
+- **Tanım:**
+  `@Id`, bir alanın birincil anahtar olduğunu belirtir. Her Entity sınıfında bir ve yalnızca bir `@Id` alanı olmak zorundadır.
+- **Kullanımı:**
+    - Bu alan, veritabanındaki her kaydın benzersiz olarak tanımlanmasını sağlar.
+    - Diğer JPA anotasyonlarıyla birlikte (ör. `@GeneratedValue`) kullanılır.
+
+**Örnek:**
+```java
+@Id
+private Long id;
+```
+
+---
+
+### **2. @GeneratedValue**
+- **Tanım:**
+  `@GeneratedValue`, birincil anahtarın nasıl üretileceğini belirlemek için kullanılır. Birincil anahtarın manuel olarak belirlenmesi yerine otomatik olarak üretilmesini sağlar.
+
+- **Özellikleri:**
+    - **strategy:**
+      Birincil anahtarın üretim stratejisini belirler. JPA'da desteklenen stratejiler şunlardır:
+        1. **GenerationType.AUTO:** Varsayılan stratejiyi kullanır. ORM sağlayıcı, veritabanına uygun en iyi stratejiyi seçer.
+        2. **GenerationType.IDENTITY:** Veritabanının otomatik artan birincil anahtar özelliğini kullanır.
+        3. **GenerationType.SEQUENCE:** Bir veritabanı dizisi (sequence) kullanarak anahtar üretir.
+        4. **GenerationType.TABLE:** Anahtarlar için bir tablo kullanır.
+
+    - **generator:**
+      `@SequenceGenerator` gibi bir jeneratör tanımına başvuru yapar. Bu özellik, `GenerationType.SEQUENCE` ile birlikte kullanılır.
+
+**Örnek:**
+```java
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+```
+
+---
+
+### **3. @SequenceGenerator**
+- **Tanım:**
+  `@SequenceGenerator`, birincil anahtar üretimi için kullanılan bir diziyi tanımlar. Bu anotasyon, bir veritabanı dizisiyle (sequence) birlikte çalışır ve JPA'nın birincil anahtar değerlerini bu diziden almasını sağlar.
+
+- **Özellikleri:**
+    1. **name:**
+        - Bu jeneratör için bir ad tanımlar.
+        - `@GeneratedValue(generator = "customer_seq")` içinde kullanılan isimle eşleşmelidir.
+        - Aynı projede birden fazla jeneratör tanımlayabilirsiniz, bu nedenle adların benzersiz olması gerekir.
+        - **Örnek:** `"customer_seq"`
+
+    2. **sequenceName:**
+        - Veritabanında bulunan veya JPA tarafından oluşturulacak olan dizi (sequence) adını belirtir.
+        - Bu, veritabanındaki gerçek dizinin adıdır.
+        - **Örnek:** `"customer_sequence"`
+
+    3. **allocationSize:**
+        - Her bir dizi çağrısında kaç anahtarın önceden ayrılacağını belirler.
+        - Varsayılan değer `50`'dir. Ancak, `allocationSize = 1` olarak ayarlandığında her seferinde yalnızca bir değer üretilir.
+        - Daha büyük bir değer, performansı artırabilir ancak numaralandırma boşluklarına neden olabilir.
+
+    4. **initialValue:**
+        - Dizinin başlangıç değerini belirtir. Varsayılan değer `1`'dir.
+        - Eğer burada tanımlanmazsa, dizinin veritabanındaki varsayılan değeri kullanılır.
+
+**Örnek:**
+```java
+@SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", allocationSize = 1)
+```
+
+---
+
+### **Kodun Detaylı Çalışma Mantığı**
+
+#### **Açıklama Satır Satır**
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+@SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", allocationSize = 1)
+private Long id;
+```
+
+1. **@Id:**
+    - `id` alanının bu Entity için birincil anahtar olduğunu belirtir.
+
+2. **@GeneratedValue:**
+    - Birincil anahtarın otomatik olarak üretilmesini sağlar.
+    - Strateji olarak `GenerationType.SEQUENCE` belirtilmiştir, yani veritabanı dizisi (sequence) kullanılacaktır.
+    - Kullanılacak jeneratör `generator = "customer_seq"` ile tanımlanmıştır.
+
+3. **@SequenceGenerator:**
+    - `"customer_seq"` adında bir jeneratör tanımlanmıştır.
+    - Bu jeneratör, `"customer_sequence"` adlı bir veritabanı dizisini kullanacaktır.
+    - `allocationSize = 1`, her çağrıda diziden yalnızca bir değer alınacağını belirtir.
+
+---
+
+### **Sequence Mantığı (Veritabanı Tarafı)**
+
+#### **Dizi (Sequence) Nedir?**
+- Bir dizi, otomatik artan sayılar üreten bir veritabanı nesnesidir.
+- JPA, bu diziyi birincil anahtar değerlerini üretmek için kullanır.
+
+#### **Veritabanında Sequence Oluşturma**
+Eğer diziyi manuel olarak oluşturmanız gerekiyorsa, aşağıdaki SQL komutunu kullanabilirsiniz:
+
+**SQL Örneği:**
+```sql
+CREATE SEQUENCE customer_sequence
+START WITH 1
+INCREMENT BY 1;
+```
+
+Bu, `customer_sequence` adlı bir dizi oluşturur. İlk değer `1` olacak ve her çağrıda `1` artırılacaktır.
+
+---
+
+### **Neden Sequence Kullanılır?**
+1. **Performans:**
+    - Diziler, diğer yöntemlere göre daha performanslıdır.
+    - `allocationSize` ile optimizasyon yapılabilir.
+
+2. **Taşınabilirlik:**
+    - `GenerationType.SEQUENCE`, JPA'nın çoğu veritabanı ile uyumludur.
+
+3. **Kontrol:**
+    - Dizinin adını, başlangıç değerini ve artış miktarını kontrol edebilirsiniz.
+
+---
+
+### **Tam Çalışan Örnek**
+```java
+@Entity
+@Table(name = "customers")
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
+    @SequenceGenerator(name = "customer_seq", sequenceName = "customer_sequence", allocationSize = 1)
+    private Long id;
+
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+}
+```
+
+---
+
+### **Çalışma Süreci**
+1. İlk kayıt oluşturulduğunda, JPA veritabanına `customer_sequence` dizisinden bir değer ister.
+2. Dizi, başlangıçta `1` değeri döner ve `id` alanına atanır.
+3. Her yeni kayıt oluşturulduğunda, dizi bir sonraki değeri (ör. `2`, `3`, `4`) döner.
+4. Eğer `allocationSize` farklı ayarlanmışsa, JPA bir seferde birden fazla değer alabilir.
+
+---
+
+Bu açıklamalar, `@Id`, `@GeneratedValue` ve `@SequenceGenerator` anotasyonlarının detaylarını ve nasıl kullanıldıklarını açık bir şekilde ortaya koymaktadır. Bu yapı, JPA ile çalışan bir uygulamada birincil anahtar yönetiminin temel taşlarından biridir.
+
+
+
 ## Lombok Error
 ```sh 
 ```
@@ -920,11 +1375,6 @@ Spring Data JPA ile kullanılan bu terimler, bir veritabanı üzerinde otomatik 
 ```
 ---
 
-## Spring Boot
-```sh 
-
-```
----
 
 ## Spring Boot
 ```sh 
@@ -944,11 +1394,7 @@ Spring Data JPA ile kullanılan bu terimler, bir veritabanı üzerinde otomatik 
 ```
 ---
 
-## Spring Boot
-```sh 
 
-```
----
 
 ## Spring Boot
 ```sh 

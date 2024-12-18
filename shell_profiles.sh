@@ -26,53 +26,36 @@ echo -e "Spring Boot & Redis & Docker kurulumları başlıyor..."
 # User Variable
 PROFILES="Profile Seçimi"
 DOCKER="Docker Seçimi"
+MAVEN_DOCKER="Maven & Docker Seçimi"
 
-chmod +x ./countdown.sh
+chmod +x ./shell_countdown.sh
 
 ######################################################################################
 ######################################################################################
 maven_deployment(){
   # git pull httpp
   # cd isim
+  #mvn clean package
   mvn clean package -DskipTests
 }
+maven_deployment
 
 docker_manuel(){
-  docker-compose up
-  # docker-compose up -d
+  # docker-compose up
+  docker-compose up -d
 }
+docker_manuel
 
-# logout
-logout() {
-    sleep 2
-    echo -e "\n###### ${DOCKER} ######  "
-    read -p "Sistemi Kapatıp Tekrar Açmak ister misiniz ? e/h " logoutResult
-    if [[ $logoutResult == "e" || $logoutResult == "E" ]]; then
-        echo -e "Docker Kurulumu ..."
-
-      ./countdown.sh
-      echo -e "Maven deployment ..."
-      maven_deployment
-
-      ./countdown.sh
-      echo -e "Docker deployment ..."
-      docker_manuel
-
-    else
-        echo -e "Sistem Kapatılmadı"
-    fi
-}
- logout
 
 ######################################################################################
 ######################################################################################
-# Updated
+# Profiles
 springboot_profiles_chooise() {
     sleep 2
     echo -e "\n###### ${PROFILES} ######  "
 
     # Güncelleme Tercihi
-    echo -e "Profile İçin Seçim Yapınız\n1-)Profiles Development\n2-)Profiles Production\n3-)dist-upgrade\n4-)Çıkış"
+    echo -e "Profile İçin Seçim Yapınız\n1-)Profiles Development\n2-)Profiles Production\n3-)Profiles Test\n4-)Çıkış"
     read chooise
 
     # Girilen sayıya göre tercih
