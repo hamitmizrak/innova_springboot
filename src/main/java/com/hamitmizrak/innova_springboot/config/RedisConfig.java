@@ -105,3 +105,11 @@ public class RedisConfig {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
 } //end RedisConfig
+
+
+/*
+Test İçin: AddressService yazdığım Redis için
+// FIND BY ID (Address)
+// REDIS : için aşağıdaki linktten çalışıp çalışmadığını bu linkten anlayabiliriz
+// http://localhost:4444/api/address/v1.0.0/find/1
+* */
