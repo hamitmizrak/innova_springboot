@@ -8,7 +8,7 @@ chmod +x shell_countdown.sh
 
 # Maven deployment
 version_info(){
-  shell_countdown
+  ./shell_countdown.sh
   mvn -v
   git -v
   java -version
@@ -20,7 +20,7 @@ version_info
 #########################################################
 # Maven deployment
 maven_deployment(){
-  shell_countdown
+  ./shell_countdown.sh
   #mvn clean package
   mvn clean package -DskipTests
 }
@@ -29,7 +29,7 @@ maven_deployment
 #########################################################
 # Docker Deployment
 docker_deployment(){
-  shell_countdown
+  ./shell_countdown.sh
   docker-compose up
   #docker-compose up -d
 }
