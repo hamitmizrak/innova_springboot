@@ -1363,9 +1363,225 @@ Spring Data JPA ile kullanılan bu terimler, bir veritabanı üzerinde otomatik 
 ```
 ---
 
-## Spring Boot
+## Spring Api @PathVaraible ile @RequestParam
 ```sh 
+### **Spring API'de `@RequestParam` ve `@PathVariable` Arasındaki Farklar**
 
+Spring Framework'te API geliştirme sırasında sıkça kullanılan `@RequestParam` ve `@PathVariable`, istemci tarafından gönderilen verileri işlemek için kullanılır. Her iki anotasyonun da benzer işlevleri vardır, ancak kullanıldıkları yerler ve veri alma yöntemleri farklıdır. Bu iki anotasyonu ayrıntılı olarak inceleyelim.
+
+---
+
+### **1. `@RequestParam`**
+
+#### **Nedir?**
+- `@RequestParam`, **HTTP request**'in **query parameters** kısmındaki verileri almak için kullanılır.
+- İstemci tarafında, genellikle `?param=value` formatında gönderilen verilerle çalışır.
+- URL'deki parametrelerin adıyla eşleşen bir Java değişkenine veriyi aktarır.
+
+#### **Kullanım**
+- Kullanıcıdan gelen sorgu parametrelerini yakalamak için kullanılır.
+- Örneğin, aşağıdaki gibi bir URL’den parametreleri alır:
+  ```
+GET /api/products?category=electronics&page=2
+  ```
+
+**Örnek Kod:**
+```java
+@GetMapping("/api/products")
+public List<Product> getProducts(@RequestParam String category, @RequestParam int page) {
+    // 'category' ve 'page' parametreleri URL'den alınır.
+    return productService.getProductsByCategory(category, page);
+}
+```
+
+**Örnek Request:**
+```
+GET /api/products?category=electronics&page=2
+```
+
+**Sonuç:**
+- `category = "electronics"`
+- `page = 2`
+
+---
+
+#### **Özellikleri**
+1. **Varsayılan Değer Atama (`defaultValue`):**
+    - Parametre eksik gönderildiğinde bir varsayılan değer kullanılabilir.
+   ```java
+   @GetMapping("/api/products")
+   public List<Product> getProducts(@RequestParam(defaultValue = "all") String category) {
+       return productService.getProductsByCategory(category);
+   }
+   ```
+   **Örnek:**
+   ```
+   GET /api/products
+   ```
+   Sonuç: `category = "all"`
+
+2. **Zorunluluk Kontrolü (`required`):**
+    - Parametrenin istekte yer alması zorunlu mu değil mi belirlenebilir.
+    - Varsayılan: `required = true`.
+   ```java
+   @GetMapping("/api/products")
+   public List<Product> getProducts(@RequestParam(required = false) String category) {
+       return productService.getProductsByCategory(category);
+   }
+   ```
+
+3. **Çoklu Parametre Alma:**
+    - Birden fazla aynı isimli parametre varsa, `List` veya `Array` olarak alabilirsiniz.
+   ```java
+   @GetMapping("/api/products")
+   public List<Product> getProducts(@RequestParam List<String> categories) {
+       return productService.getProductsByCategories(categories);
+   }
+   ```
+   **Örnek:**
+   ```
+   GET /api/products?categories=electronics&categories=furniture
+   ```
+   Sonuç: `categories = ["electronics", "furniture"]`
+
+4. **Tür Dönüşümü:**
+    - `@RequestParam`, temel veri türleri (String, int, boolean vb.) ve özelleştirilmiş türlere otomatik dönüşüm yapar.
+
+---
+
+### **2. `@PathVariable`**
+
+#### **Nedir?**
+- `@PathVariable`, **URL’nin path (yol)** kısmındaki değişkenleri almak için kullanılır.
+- İstemci tarafından gönderilen değer, genellikle URL'nin bir parçası olarak gönderilir:
+  ```
+  GET /api/products/{id}
+  ```
+
+#### **Kullanım**
+- Genellikle, bir kaynağa özgü işlemleri gerçekleştirmek için kullanılır.
+- Örneğin, bir ürünün ID’sine göre detaylarını almak.
+
+**Örnek Kod:**
+```java
+@GetMapping("/api/products/{id}")
+public Product getProductById(@PathVariable Long id) {
+    // 'id' değişkeni URL'den alınır.
+    return productService.getProductById(id);
+}
+```
+
+**Örnek Request:**
+```
+GET /api/products/42
+```
+
+**Sonuç:**
+- `id = 42`
+
+---
+
+#### **Özellikleri**
+1. **URL'deki Dinamik Değerleri Alma:**
+    - Path değişkenlerini URL’nin belirli bir kısmından alır.
+   ```java
+   @GetMapping("/api/orders/{orderId}/items/{itemId}")
+   public OrderItem getOrderItem(@PathVariable Long orderId, @PathVariable Long itemId) {
+       return orderService.getOrderItem(orderId, itemId);
+   }
+   ```
+
+2. **Çoklu Parametre Kullanımı:**
+    - Aynı endpoint üzerinde birden fazla `@PathVariable` kullanılabilir.
+      **Örnek:**
+   ```
+   GET /api/orders/123/items/456
+   ```
+   Sonuç: `orderId = 123`, `itemId = 456`
+
+3. **Tür Dönüşümü:**
+    - Path değişkeni, String olarak gelir ve otomatik olarak belirtilen veri türüne dönüştürülür.
+   ```java
+   @GetMapping("/api/products/{id}")
+   public Product getProduct(@PathVariable("id") Integer productId) {
+       return productService.getProductById(productId);
+   }
+   ```
+
+4. **İsim Eşleşmesi:**
+    - Değişken ismi, metodun parametresi ile eşleşmiyorsa `@PathVariable("name")` ile açıkça belirtilir.
+
+---
+
+### **@RequestParam ve @PathVariable Karşılaştırması**
+
+| **Özellik**                | **@RequestParam**                                                                                                                                                              | **@PathVariable**                                                                                              |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| **Kullanıldığı Yer**        | Query parametrelerini almak için kullanılır (`?key=value`).                                                                                                                  | URL path değişkenlerini almak için kullanılır (`/path/{value}`).                                              |
+| **Kullanım Türü**           | İsteğe bağlı parametreler için uygundur.                                                                                                                                      | Zorunlu (mandatory) parametreler için uygundur.                                                               |
+| **Özellikler**              | Varsayılan değer atama, çoklu parametre alma, zorunluluk kontrolü yapılabilir.                                                                                               | Daha dinamik URL yapıları için uygundur.                                                                      |
+| **Tür Dönüşümü**            | Temel veri türleri ve özelleştirilmiş türlere otomatik dönüşüm yapar.                                                                                                         | Benzer şekilde temel veri türleri ve özelleştirilmiş türlere otomatik dönüşüm yapar.                           |
+| **Performans**              | Query string'e dayandığı için URL daha uzun olabilir, ancak daha esnek bir kullanım sunar.                                                                                   | URL path'e dayandığı için daha kısa ve okunabilir bir URL yapısı sağlar.                                       |
+| **Örnek URL**               | `/api/products?category=electronics&page=2`                                                                                                                                 | `/api/products/42`                                                                                           |
+| **Zorunluluk**              | Parametreler isteğe bağlı olabilir (`required = false`).                                                                                                                     | Path değişkenleri genellikle zorunludur.                                                                      |
+
+---
+
+### **Hangi Durumda Hangisi Kullanılır?**
+
+- **`@RequestParam` Kullanımı:**
+    - Birden fazla isteğe bağlı parametre gerektiğinde.
+    - Filtreleme veya sıralama gibi sorgu işlemleri yapılacaksa.
+    - Örneğin:
+      ```
+      GET /api/products?category=electronics&sort=asc
+      ```
+
+- **`@PathVariable` Kullanımı:**
+    - Belirli bir kaynağa erişim gerekiyorsa.
+    - Daha temiz ve RESTful bir URL yapısı oluşturulacaksa.
+    - Örneğin:
+      ```
+      GET /api/products/42
+      ```
+
+---
+
+### **Gerçek Hayat Senaryosu**
+
+#### **Karma Kullanım Örneği:**
+```java
+@GetMapping("/api/orders/{orderId}")
+public Order getOrderDetails(
+    @PathVariable Long orderId,
+    @RequestParam(required = false, defaultValue = "false") boolean includeItems) {
+    if (includeItems) {
+        return orderService.getOrderWithItems(orderId);
+    } else {
+        return orderService.getOrder(orderId);
+    }
+}
+```
+
+**Örnek İstekler:**
+1. **Sipariş Detayları Alma:**
+   ```
+   GET /api/orders/123
+   ```
+   Sonuç: Sadece sipariş bilgisi.
+
+2. **Sipariş Detayları ve Öğeler:**
+   ```
+   GET /api/orders/123?includeItems=true
+   ```
+   Sonuç: Sipariş bilgisi ve tüm öğeler.
+
+---
+
+### **Sonuç**
+- **`@RequestParam`**, esnek sorgu parametreleri için kullanılır.
+- **`@PathVariable`**, belirli bir kaynağa dinamik erişim sağlamak için uygundur.
+- RESTful bir API geliştirme sırasında bu iki anotasyonu birlikte kullanarak hem okunabilir hem de esnek bir yapı oluşturabilirsiniz.
 ```
 ---
 
@@ -1376,31 +1592,456 @@ Spring Data JPA ile kullanılan bu terimler, bir veritabanı üzerinde otomatik 
 ---
 
 
-## Spring Boot
+## Spring Data save ve saveflush
 ```sh 
 
 ```
 ---
 
-## Spring Boot
+Spring Data JPA'da, `iAddressRepository.save` ve `iAddressRepository.saveAndFlush` metotları, bir varlığı veritabanına kaydetmek için kullanılır, ancak aralarında önemli farklar vardır:
+
+### 1. **`save` Metodu**:
+- **Amaç**: Varlığı (entity) kalıcı hale getirir, yani varlığı veritabanına kaydeder veya günceller.
+- **Çalışma Şekli**:
+    - Varlık `EntityManager` üzerinden yönetilir ve **Persistence Context**'e (kalıcılık bağlamına) eklenir.
+    - Ancak, bu işlem doğrudan veritabanına yazılmaz; Persistence Context'te bekletilir ve **transaction commit edildiğinde** ya da `flush` çağrıldığında veritabanına yazılır.
+- **Performans**:
+    - Daha iyidir çünkü birden fazla değişiklik, tek bir `flush` ile toplu olarak işlenebilir.
+
+   ```java
+   AddressEntity address = new AddressEntity();
+   address.setStreet("Main Street");
+   iAddressRepository.save(address);
+   // Değişiklik Persistence Context'e eklenir ama hemen veritabanına yazılmaz.
+   ```
+
+### 2. **`saveAndFlush` Metodu**:
+- **Amaç**: Varlığı kaydeder ve hemen veritabanına yazılmasını zorlar.
+- **Çalışma Şekli**:
+    - Varlık hem Persistence Context'e eklenir hem de `EntityManager.flush()` çağrılarak veritabanına **hemen yazılır**.
+- **Kullanım Durumu**:
+    - Veritabanındaki güncel duruma hemen ihtiyaç duyuluyorsa (örneğin, başka işlemler bu kaydı hemen kullanacaksa) tercih edilir.
+- **Performans**:
+    - Her çağrıda veritabanına yazma işlemi yapıldığından, çok sık kullanılırsa performansı olumsuz etkileyebilir.
+
+   ```java
+   AddressEntity address = new AddressEntity();
+   address.setStreet("Main Street");
+   iAddressRepository.saveAndFlush(address);
+   // Değişiklik hemen veritabanına yazılır.
+   ```
+
+### 3. **Önemli Farklar**:
+| Özellik                | `save`                                         | `saveAndFlush`                                |
+|------------------------|-----------------------------------------------|-----------------------------------------------|
+| **Persistence Context**| Sadece Persistence Context'te saklanır.      | Persistence Context'e eklenir ve `flush` yapılır. |
+| **Veritabanına Yazım** | Commit veya manuel `flush` ile yapılır.       | Hemen veritabanına yazılır.                   |
+| **Performans**         | Daha iyi (toplu işlemler için uygundur).      | Daha düşük (her işlemde yazım yapılır).       |
+| **Kullanım Durumu**    | Genel kullanım için uygundur.                 | Veritabanına anında yazılmasını gerektiren durumlarda. |
+
+### 4. **Hangi Durumda Hangisi Kullanılmalı?**
+- **`save`**: Veritabanına yazma işlemlerinin toplu olarak yapılmasını tercih ediyorsanız kullanın.
+- **`saveAndFlush`**: Veritabanına hemen yazma ihtiyacı olan durumlarda (örneğin, başka bir işlem kaydedilen veriyi hemen kullanacaksa) kullanın.
+
+### Örnek Kullanım Senaryosu:
+- Eğer bir sipariş sistemi yazıyorsanız ve sipariş adresini kaydedip ardından bu adresi kullanarak bir başka işlem yapıyorsanız, `saveAndFlush` tercih edilebilir:
+   ```java
+   AddressEntity address = new AddressEntity();
+   address.setStreet("Main Street");
+   iAddressRepository.saveAndFlush(address);
+   
+   // Adresi hemen kullanmayı gerektiren bir işlem:
+   Optional<AddressEntity> savedAddress = iAddressRepository.findById(address.getId());
+   ```
+
+Sonuç olarak, doğru seçimi yapmak için uygulamanızın gereksinimlerini göz önünde bulundurmanız önemlidir.
+
+## Spring Transaction
 ```sh 
 
 ```
 ---
+### **Spring Boot `@Transactional` Anotasyonu**
 
-## Spring Boot
+#### **Nedir?**
+`@Transactional`, Spring Framework'te bir metot veya sınıf üzerinde işlem (transaction) yönetimini etkinleştiren bir anotasyondur. Veritabanı işlemleri sırasında tutarlılığı sağlamak ve otomatik olarak **commit** veya **rollback** işlemlerini gerçekleştirmek için kullanılır.
+
+---
+
+### **@Transactional Kullanım Alanları**
+- **Veritabanı işlemlerinin atomik olmasını sağlamak:** Bir işlem ya tamamen başarılı olmalı ya da tamamen başarısız olmalıdır.
+- **Hata durumunda rollback:** İşlem sırasında bir hata meydana geldiğinde, tüm yapılan değişiklikler geri alınır.
+- **Büyük ölçekli uygulamalarda işlem yönetimini kolaylaştırmak.**
+
+---
+
+### **@Transactional Temel Özellikleri**
+
+1. **Sınıf veya Metot Seviyesi Kullanım**
+    - **Sınıf Seviyesi:** Tüm metotlara işlem yönetimi uygular.
+    - **Metot Seviyesi:** Sadece ilgili metoda işlem yönetimi uygular.
+
+   **Örnek:**
+   ```java
+   @Transactional
+   public void updateCustomer(Customer customer) {
+       customerRepository.save(customer);
+   }
+   ```
+
+2. **İşlem Propagasyonu (Propagation)**
+    - Mevcut bir işlem içinde mi çalışacak, yoksa yeni bir işlem mi başlatacak belirler.
+    - Varsayılan: `Propagation.REQUIRED`.
+
+   **Örnek:**
+   ```java
+   @Transactional(propagation = Propagation.REQUIRES_NEW)
+   public void saveLog(Log log) {
+       logRepository.save(log);
+   }
+   ```
+
+3. **İşlem İzolasyonu (Isolation)**
+    - Bir işlemin diğer işlemlerle nasıl etkileşim kuracağını belirler.
+    - Örnek seviyeler: `READ_COMMITTED`, `READ_UNCOMMITTED`, `REPEATABLE_READ`, `SERIALIZABLE`.
+
+   **Örnek:**
+   ```java
+   @Transactional(isolation = Isolation.REPEATABLE_READ)
+   public void processOrder(Order order) {
+       orderRepository.save(order);
+   }
+   ```
+
+4. **Rollback Stratejisi**
+    - Hangi istisnaların rollback’e neden olacağını belirler.
+    - Varsayılan: Tüm `RuntimeException` rollback, `CheckedException` rollback değil.
+
+   **Örnek:**
+   ```java
+   @Transactional(rollbackFor = Exception.class)
+   public void performOperation() throws Exception {
+       // İşlem sırasında bir hata oluşursa rollback yapılır.
+   }
+   ```
+
+5. **Read-Only İşlemler**
+    - Okuma işlemleri için kullanılır. Performansı artırır.
+    - Varsayılan: `readOnly = false`.
+
+   **Örnek:**
+   ```java
+   @Transactional(readOnly = true)
+   public Customer getCustomerById(Long id) {
+       return customerRepository.findById(id).orElse(null);
+   }
+   ```
+
+---
+
+### **@Transactional Parametreleri**
+
+| **Parametre**       | **Açıklama**                                                                                                                                         | **Varsayılan**      |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| **propagation**     | İşlem yayılımı türünü belirtir. (Örneğin, `REQUIRED`, `REQUIRES_NEW`, `NESTED`)                                                                       | `REQUIRED`          |
+| **isolation**       | İşlem izolasyon seviyesini belirtir. (Örneğin, `READ_COMMITTED`, `SERIALIZABLE`)                                                                     | Veritabanı varsayılanı |
+| **timeout**         | İşlemin zaman aşımını saniye cinsinden belirtir. (Eğer süre aşılırsa işlem geri alınır.)                                                              | `-1` (sonsuz)       |
+| **readOnly**        | İşlemin salt okunur olup olmadığını belirtir.                                                                                                        | `false`             |
+| **rollbackFor**     | Hangi istisnaların rollback yapılacağını belirtir.                                                                                                   | `RuntimeException`  |
+| **noRollbackFor**   | Hangi istisnaların rollback yapılmayacağını belirtir.                                                                                               | Yok                 |
+
+---
+
+### **Örnek Kullanım**
+
+#### **1. Basit Kullanım**
+```java
+@Transactional
+public void saveCustomer(Customer customer) {
+    customerRepository.save(customer);
+}
+```
+- Bu metot içinde bir hata oluşursa, yapılan işlemler geri alınır.
+
+---
+
+#### **2. Propagation ve Isolation ile Kullanım**
+```java
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+public void updateOrder(Order order) {
+    orderRepository.save(order);
+}
+```
+- Yeni bir işlem başlatır.
+- En yüksek izolasyon seviyesi olan `SERIALIZABLE` kullanılır.
+
+---
+
+#### **3. Rollback İçin Özelleştirme**
+```java
+@Transactional(rollbackFor = Exception.class, noRollbackFor = IllegalArgumentException.class)
+public void performTransaction() throws Exception {
+    // Exception olduğunda rollback yapılır.
+    // IllegalArgumentException durumunda rollback yapılmaz.
+}
+```
+
+---
+
+#### **4. Read-Only İşlemler**
+```java
+@Transactional(readOnly = true)
+public List<Customer> getAllCustomers() {
+    return customerRepository.findAll();
+}
+```
+- Salt okunur modda çalışır, veri değiştirilmez.
+
+---
+
+### **Transaction Yönetiminde Dikkat Edilmesi Gerekenler**
+
+1. **Proxy Mekanizması**
+    - Spring, `@Transactional` için bir proxy oluşturur. Bu nedenle, anotasyon yalnızca **public** yöntemlerde çalışır.
+    - `private` veya `protected` metotlarda anotasyon etkisizdir.
+
+2. **Transaction İçi Transaction Çağrısı**
+    - Aynı sınıf içinde bir metottan başka bir `@Transactional` anotasyonlu metot çağırılırsa, Spring proxy bu çağrıyı algılayamaz. Bunun çözümü, `self-injection` veya farklı bir bean aracılığıyla çağrıdır.
+
+3. **Transaction Sınırlarını Doğru Belirleme**
+    - İşlemleri gereksiz yere uzun tutmak performans sorunlarına yol açabilir.
+    - Transaction süresince dış kaynak erişimlerini sınırlayın (ör. HTTP çağrıları).
+
+4. **Timeout Ayarları**
+    - Uzun süren işlemler için `timeout` belirlemek gereklidir.
+
+---
+
+### **Örnek Senaryo**
+
+Bir e-ticaret uygulamasında sipariş işleme:
+
+**Kod:**
+```java
+@Service
+public class OrderService {
+
+    @Transactional
+    public void processOrder(Order order) {
+        // Sipariş kaydet
+        orderRepository.save(order);
+
+        // Ödeme işlemini gerçekleştir
+        paymentService.processPayment(order.getPaymentDetails());
+
+        // Stok güncelle
+        stockService.updateStock(order.getItems());
+    }
+}
+```
+
+- Sipariş kaydetme, ödeme işleme ve stok güncelleme işlemleri aynı transaction içinde gerçekleştirilir.
+- Bir hata oluşursa, tüm işlemler geri alınır.
+
+---
+
+### **Sonuç**
+Spring Boot'ta `@Transactional`, işlem yönetimini kolaylaştıran ve veri tutarlılığını garanti eden güçlü bir araçtır. Doğru yayılım ve izolasyon stratejileri seçilerek, işlem sırasında oluşabilecek çakışmalar ve tutarsızlıklar önlenebilir. Ancak işlem yönetimi sırasında performans ve kapsam konularına dikkat edilmelidir.
+
+## Redis Docker Compose
 ```sh 
+# Projemizin sağlıklı çalışması için öncelikler redis servera kurulu olması gerekiyor
+docker container run --name spring_redis -p 6379:6379 -d redis
+```
+---
+
+## Redis pom.xml
+```sh 
+        <!-- #### REDIS #################################################  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-data-redis</artifactId>
+           <exclusions>
+               <exclusion>
+                   <groupId>io.lettuce.core</groupId>
+                   <artifactId>lettuce-core</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+```
+---
+
+## Redis Config
+```sh 
+package com.hamitmizrak.innova_springboot.config;
+
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import java.time.Duration;
+
+/*
+Eklenmiş Özellikler:
+redisTemplate:
+Key ve Value için StringRedisSerializer ve GenericJackson2JsonRedisSerializer kullanır.
+Genellikle standart CRUD işlemleri için kullanılır.
+
+customCacheConfiguration:
+Cache isimleri için bir customPrefix ekler.
+1 saatlik bir geçerlilik süresi tanımlar.
+Null değerlerin cache yapılmasını engeller.
+
+loggingRedisTemplate:
+Redis işlemleri için loglama desteği eklenmiştir.
+Transaction desteği aktif hale getirilmiştir.
+
+transactionalRedisTemplate:
+RedisTemplate üzerinde transaction desteği sağlanmıştır.
+Bu, aynı işlem içindeki birçok Redis komutunun atomik olarak çalıştırılmasını sağlar.
+
+cacheConfiguration:
+Daha kısa süreli cache işlemleri için 1 dakikalık TTL belirler.
+Null değerlerin cache yapılmasını önler.
+Bu yapılandırma, Redis'i hem cache hem de transaction bazlı işlemler için esnek bir şekilde kullanmanıza olanak sağlar. Ayrıca, farklı kullanım senaryoları için ayrı RedisTemplate tanımları sağlanmıştır.
+*/
+
+
+@Configuration
+@EnableCaching
+public class RedisConfig {
+
+    /**
+     * Standart bir RedisTemplate yapılandırması.
+     * Key ve Value için sırasıyla StringRedisSerializer ve GenericJackson2JsonRedisSerializer kullanılır.
+     */
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return redisTemplate;
+    }
+
+    /**
+     * Cache Configuration - Cache prefix ekleme ve TTL (Time To Live) belirleme.
+     */
+    @Bean
+    public RedisCacheConfiguration customCacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .prefixCacheNameWith("customPrefix::") // Cache isimlerine özel bir prefix ekler
+                .entryTtl(Duration.ofHours(1)) // Cache geçerlilik süresini 1 saat olarak belirler
+                .disableCachingNullValues() // Null değerleri cache’lemez
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    }
+
+    /**
+     * RedisTemplate ile özel loglama ve transaction desteği.
+     */
+    @Bean
+    public RedisTemplate<String, Object> loggingRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setEnableTransactionSupport(true); // Transaction desteği
+        return template;
+    }
+
+    /**
+     * Transaction destekli RedisTemplate yapılandırması.
+     */
+    @Bean
+    public RedisTemplate<String, Object> transactionalRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setEnableTransactionSupport(true); // Transaction desteği
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return redisTemplate;
+    }
+
+    /**
+     * Default Cache Configuration - Özellikle kısa süreli cache kullanımları için.
+     */
+    @Bean
+    public RedisCacheConfiguration cacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(1)) // 1 dakikalık geçerlilik süresi
+                .disableCachingNullValues() // Null değerlerini cache’lemez
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    }
+} //end RedisConfig
+
 
 ```
 ---
 
 
-
-## Spring Boot
+## Redis application.properties
 ```sh 
+######################################################################################
+### REDIS CONFIG   ########################################################################
+######################################################################################
+# Redis server adresi ve portu
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.timeout=60000
+
+# Cache yapılandırması
+spring.cache.type=redis
 
 ```
 ---
+
+
+## Redis @Cacheable
+```sh 
+      // FIND BY ID (Address)
+    // REDIS : için aşağıdaki linktten çalışıp çalışmadığını bu linkten anlayabiliriz
+    // http://localhost:4444/api/address/v1.0.0/find/1
+    @Cacheable(value = "addressFindByIdCache", key = "#id")
+    @Override
+    public AddressDto objectServiceFindById(Long id) {
+        //REDIS
+        System.err.println("Redis başlamadan önce ilk burası çalışacak ancak redis çalışıyorsa bunu cache dakikası bitene kadar veya flush yapana kadar görmeyeceksiniz "+id);
+        return iAddressRepository.findById(id)
+                .map(AddressMapper::AddressEntityToAddressDto)
+                .orElseThrow(()-> new _404_NotFoundException(id+" nolu veri yoktur"));
+    }
+```
+---
+
+
+
 
 ## Spring Boot
 ```sh 

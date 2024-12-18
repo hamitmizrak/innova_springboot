@@ -5,6 +5,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 // LOMBOK
 @RequiredArgsConstructor
@@ -16,11 +18,13 @@ public class AddressValidQrCode implements ConstraintValidator<AddressUniqueQrCo
 
     // Injection
     private final IAddressRepository iAddressRepository;
+    private final MessageSource messageSource;
 
 
     @Override
     public boolean isValid(String addressQrCode, ConstraintValidatorContext constraintValidatorContext) {
-       String findQrCode =addressQrCode+" böyle bir Qr Code yoktur ekleyebilirsin.";
+       //String findQrCode =addressQrCode+" böyle bir Qr Code yoktur ekleyebilirsin.";
+       String findQrCode= messageSource.getMessage("address.qr_code.unique.validation.constraints.NotNull.message",null, LocaleContextHolder.getLocale());
        // 1.YOL
         /*
                  AddressEntity addressEntityFind1=iAddressRepository
@@ -38,7 +42,8 @@ public class AddressValidQrCode implements ConstraintValidator<AddressUniqueQrCo
         // Conditional
         // Eğer böyle bir kayıt varsa
         if(isResult){
-            System.out.println(addressQrCode+" Aynı isimde başka bir Qr code vardır");
+            /*System.out.println(addressQrCode+" Aynı isimde başka bir Qr code vardır");*/
+            System.out.println(findQrCode);
             return false;
         }else {
             System.out.println(addressQrCode+" Harika Farklı  isimde başka bir Qr code yazabilirsiniz");
