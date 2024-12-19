@@ -1,11 +1,9 @@
 package com.hamitmizrak.innova_springboot.aspect;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -24,12 +22,13 @@ import java.util.Date;
 public class AuditLogEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String entityName;
     private String action;
     private String performedBy;
-    private Date timestamp;
+    private String message; // Log mesajı
+    private Date timestamp; // Zaman damgası
 
     public AuditLogEntity(String entityName, String action, String performedBy, Date timestamp) {
         this.entityName = entityName;
