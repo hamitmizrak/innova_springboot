@@ -671,3 +671,189 @@ Spring API, birçok farklı bileşeni içerir. Bu bileşenler, web uygulamaları
 6. **Spring Security**: API'lerin güvenliğini sağlamak için kullanılan modüldür. Kimlik doğrulama, yetkilendirme ve erişim kontrolü gibi güvenlik işlemlerini yönetir. API'lerin güvenliğini sağlamak, özellikle kullanıcı verilerini korumak için son derece önemlidir. Spring Security, REST API'ler için OAuth2, JWT (JSON Web Tokens) gibi modern güvenlik protokollerini de destekler.
 
 7. **Spring Cloud**: Mikroservis mimarisine uygun API'ler geliştirmek için kullanılan Spring modülüdür. Spring Cloud, dağıtık sistemlerde kullanılan servis keşfi, yük dengeleme, yapılandırma yönetimi gibi özellikleri sağlar. Özellikle mikroservis tabanlı uygulamalarda, Spring Cloud ile API'lerin yönetimi kolaylaşır.
+
+---
+
+### Spring Boot AOP (Aspect-Oriented Programming) Nedir?
+
+Spring Boot AOP (Aspect-Oriented Programming - Yönlendirilmiş Programlama), bir uygulamanın çekirdek iş mantığından bağımsız olan genel özelliklerini (cross-cutting concerns) ele almak için kullanılan güçlü bir programlama paradigmasıdır. Genel özellikler, loglama, hata ayıklama, güvenlik, performans izleme ve transaction yönetimi gibi uygulamanın birden fazla yerinde kullanılan tekrarlayan kod parçalarıdır.
+
+Spring Framework, AOP desteğini sağlam bir şekilde entegre eder ve bunu Spring Boot projelerinde de kolayca kullanabilirsiniz. AOP'nin temel amacı, bu çapraz kesen kaygıları (cross-cutting concerns) uygulamanın iş mantığından ayırmaktır.
+
+---
+
+### AOP Temel Kavramları
+
+#### 1. **Aspect (Kesit)**
+- Bir uygulamanın çapraz kesen kaygılarını temsil eder. Örneğin, loglama veya güvenlik birer "aspect"tir. Aspect, belirli bir davranışı kapsar ve bu davranış uygulamanın diğer bölümlerinde kesintisiz bir şekilde uygulanabilir.
+
+#### 2. **Advice (Tavsiye)**
+- Bir Aspect'in ne yapacağını tanımlayan kod parçacığıdır. **Advice**, belirli bir nokta veya olayda çalışan bir mantıktır.
+- Spring AOP'de beş tür **Advice** vardır:
+  1. **Before Advice**: Bir metod çağrılmadan önce çalışır.
+  2. **After Advice**: Bir metod tamamlandıktan sonra çalışır (başarı ya da hata durumunda).
+  3. **After Returning Advice**: Bir metod başarıyla tamamlandıktan sonra çalışır.
+  4. **After Throwing Advice**: Bir metod bir hata fırlattığında çalışır.
+  5. **Around Advice**: Bir metod çağrılmadan önce ve çağrıldıktan sonra çalışır.
+
+#### 3. **Join Point**
+- Uygulamada bir metod çağrısı, bir istisna atılması ya da bir property'ye erişim gibi bir işlem sırasında yürütülebilecek bir noktadır. Spring AOP, yalnızca metod yürütmeleri üzerinde çalışır, dolayısıyla bir metodun başlatılması bir **Join Point**tir.
+
+#### 4. **Pointcut**
+- Bir veya daha fazla **Join Point**'i eşleştiren bir ifade veya modeldir. Örneğin, belirli bir sınıftaki tüm metodlar üzerinde işlem yapmak istiyorsanız, o sınıfın tüm metodlarını kapsayan bir **Pointcut** tanımlarsınız.
+
+#### 5. **Target Object**
+- Aspect'in uygulandığı nesnedir. Bu nesneye genellikle "proxied object" (proxy nesnesi) denir.
+
+#### 6. **Weaving (Dokuma)**
+- Aspect'lerin uygulamanın belirli noktalarına entegre edilmesi işlemidir. Spring AOP, dokumayı çalışma zamanında (runtime weaving) gerçekleştirir.
+
+---
+
+### Spring Boot'ta AOP'nin Kullanım Alanları
+
+- **Loglama**: Uygulamanın belirli bölümlerinde yapılan işlemleri izlemek.
+- **Performans İzleme**: Belirli metodların ne kadar süre çalıştığını ölçmek.
+- **Güvenlik**: Hassas metotlara erişim için kullanıcıların yetkilendirilmesi.
+- **Transaction Yönetimi**: Belirli metodların bir işlem (transaction) içinde çalışmasını sağlamak.
+- **Hata Ayıklama**: Hataları veya istisnaları yakalamak ve bunları daha iyi yönetmek.
+
+---
+
+### Spring Boot'ta AOP Uygulaması
+
+#### 1. **Spring Boot'ta AOP Bağımlılığı Eklemek**
+Maven kullanıyorsanız `spring-boot-starter-aop` bağımlılığını ekleyin:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+Gradle kullanıyorsanız:
+```gradle
+implementation 'org.springframework.boot:spring-boot-starter-aop'
+```
+
+---
+
+#### 2. **Aspect Sınıfı Tanımlamak**
+Bir Aspect oluşturmak için sınıfınızı `@Aspect` ile işaretleyin ve Spring Bean olarak tanımlayın (`@Component`).
+
+Örnek bir Aspect sınıfı:
+```java
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class LoggingAspect {
+
+    @Before("execution(* com.example.service.*.*(..))")
+    public void logBeforeMethodExecution() {
+        System.out.println("Metod çalıştırılmadan önce loglama yapılıyor.");
+    }
+}
+```
+
+**Açıklama:**
+- `@Before`: Bir metod çağrılmadan önce çalışacak bir `Advice` tanımlar.
+- `execution(* com.example.service.*.*(..))`: Belirli bir `Pointcut` ifade eder. Bu ifade, `com.example.service` paketindeki tüm sınıfların tüm metodlarını hedefler.
+
+---
+
+#### 3. **Pointcut İfadeleri**
+Pointcut ifadeleri, AOP'nin güçlü ve esnek bir şekilde kullanılmasını sağlar. Bazı örnekler:
+
+- **Belirli bir sınıftaki tüm metodlar:**
+  ```java
+  @Before("execution(* com.example.service.MyService.*(..))")
+  ```
+
+- **Belirli bir adla başlayan metodlar:**
+  ```java
+  @Before("execution(* com.example.service.*.get*(..))")
+  ```
+
+- **Birden fazla paket veya sınıf:**
+  ```java
+  @Before("execution(* com.example.service..*(..)) || execution(* com.example.repository..*(..))")
+  ```
+
+---
+
+#### 4. **Around Advice Kullanımı**
+`@Around` ile hem metod çağrısından önce hem de sonra bir işlem yapabilirsiniz.
+
+Örnek:
+```java
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class PerformanceAspect {
+
+    @Around("execution(* com.example.service.*.*(..))")
+    public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object result = joinPoint.proceed(); // Metodu çalıştırır
+        long executionTime = System.currentTimeMillis() - start;
+        System.out.println(joinPoint.getSignature() + " çalıştırma süresi: " + executionTime + "ms");
+        return result;
+    }
+}
+```
+
+---
+
+#### 5. **After Returning Advice Kullanımı**
+Bir metod başarıyla çalıştıktan sonra sonuçları yakalamak için `@AfterReturning` kullanabilirsiniz.
+
+Örnek:
+```java
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class ResultLoggingAspect {
+
+    @AfterReturning(pointcut = "execution(* com.example.service.*.*(..))", returning = "result")
+    public void logMethodResult(Object result) {
+        System.out.println("Metodun dönüş değeri: " + result);
+    }
+}
+```
+
+---
+
+### Spring AOP'nin Avantajları
+
+1. **Kod Tekrarını Azaltır:** Loglama, güvenlik, ve hata yönetimi gibi çapraz kesen kaygıları bir yerde toplar.
+2. **Daha Temiz Kod:** Çekirdek iş mantığını sadeleştirir.
+3. **Kolay Yönetim:** Çapraz kesen kaygılar tek bir yerde yönetilir.
+4. **Modülerlik:** Aspect'ler modülerdir ve uygulamanın diğer kısımlarından bağımsızdır.
+
+---
+
+### Spring Boot AOP ve Proxy Mekanizması
+
+Spring AOP, Java'nın proxy mekanizmasını kullanır:
+- **JDK Dynamic Proxy:** Eğer bir sınıf bir arayüzü implemente ediyorsa, JDK proxy'si kullanılır.
+- **CGLIB Proxy:** Eğer bir sınıf bir arayüz implemente etmiyorsa, Spring AOP bu sınıf için CGLIB (Code Generation Library) kullanır.
+
+---
+
+### Spring Boot AOP ile İlgili Kısıtlamalar
+1. **Sadece Metot Bazlı Çalışır:** Spring AOP sadece metod seviyesinde çalışır. Alan (field) erişimi gibi işlemleri desteklemez.
+2. **Compile-Time Weaving Yoktur:** Spring AOP, çalışma zamanında dokuma (runtime weaving) yapar.
+3. **Performans:** AOP proxy mekanizması performans üzerinde küçük bir yük oluşturabilir.
+
+---

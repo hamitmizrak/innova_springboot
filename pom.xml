@@ -63,6 +63,12 @@
     <!-- start dependencies-->
     <dependencies>
 
+        <!-- #### AOP #################################################  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- #### REDIS #################################################  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

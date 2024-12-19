@@ -1,9 +1,12 @@
 package com.hamitmizrak.innova_springboot;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import java.util.TimeZone;
 
 // Mongo aktif etmek ici
 // @EnableMongoRepositories
@@ -23,7 +26,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 // @EnableCaching
 
 // Auditing Aktif etmek
- @EnableJpaAuditing(auditorAwareRef = "auditorAwareBeanMethod")
+@EnableJpaAuditing(auditorAwareRef = "auditorAwareBeanMethod")
 
 // Spring Security: Şimdilik dahil etme, çünkü Bcrypted kullancağım ancak Spring security için gerekli kütüphaneleri dahil
 // Buradaki exclude ne zaman kapatmam gerekiyor ? cevap: Spring Security ile çalıştığımız zaman kapat
@@ -34,17 +37,28 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
         // Eğer Redis bağımlılığını kaldırmak istemiyorsanız ancak Redis yapılandırmasını devre dışı bırakmak istiyorsanız
         //RedisAutoConfiguration.class,
-  }
+}
 )
 //@SpringBootApplication
 public class InnovaSpringbootApplication {
 
-     /*
-		 @PostConstruct
-			public void init() {
-				TimeZone.setDefault(TimeZone.getTimeZone("IST"));
-			}
-    */
+    // Normal Constructor
+    public InnovaSpringbootApplication() {
+        System.out.println("@SpringBootApplication => Constrcutor");
+    }
+
+    // PostConstruct
+    // Örneğin, veri hazırlığı, bağlantı oluşturma, bir değişkenin başlatılması gibi işlemler burada yapılabilir.
+    // Bu metod, sınıfın constructor'ından sonra, ancak herhangi bir metodun çağrılmasından önce çalışır.
+    @PostConstruct
+    public void examplePostConstruct() {
+        System.out.println("@SpringBootApplication => PostConstruct");
+    }
+
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("IST"));
+    }
 
     public static void main(String[] args) {
 
