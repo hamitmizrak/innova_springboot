@@ -3,6 +3,8 @@ package com.hamitmizrak.innova_springboot.data.mapper;
 import com.hamitmizrak.innova_springboot.business.dto.OrderDto;
 import com.hamitmizrak.innova_springboot.data.entity.OrderEntity;
 
+import java.util.stream.Collectors;
+
 public class OrderMapper {
 
     // 1- OrderEntity'i OrderDto'a çevir
@@ -22,7 +24,15 @@ public class OrderMapper {
         }
 
         // DİKKAT: Composition (Order(N)- Product(M))
-
+        if(orderEntity.getProductsOrdersEntity()!=null) {
+            orderDto.setCompositionProductDtoList(
+                    orderEntity
+                            .getProductsOrdersEntity()
+                            .stream()
+                            .map(ProductMapper::ProductEntityToProductDto)
+                            .collect(Collectors.toList())
+            );
+        }
         return orderDto;
     }
 
@@ -43,6 +53,14 @@ public class OrderMapper {
         }
 
         // DİKKAT: Composition (Order(N)- Product(M))
+        if(orderDto.getCompositionProductDtoList()!=null) {
+            orderEntity.setProductsOrdersEntity(
+                    orderDto.getCompositionProductDtoList()
+                            .stream()
+                            .map(ProductMapper::ProductDtoToProductEntity)
+                            .collect(Collectors.toList())
+            );
+        }
         return orderEntity;
     }
 }

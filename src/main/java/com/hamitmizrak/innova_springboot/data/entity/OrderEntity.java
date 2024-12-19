@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 // LOMBOK
 @Getter
 @Setter
@@ -44,6 +46,13 @@ public class OrderEntity extends BaseEntity {
     private CustomerEntity customerOrderEntity;
 
     // Order(N) - Product(M)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_product",
+            joinColumns =@JoinColumn(name="order_id"),
+            inverseJoinColumns = @JoinColumn(name="product_id")
+    )
+    private List<ProductEntity> productsOrdersEntity; //NOT: ProductEntity içinde mappedBy ekle => productsOrdersEntity
 
     // Customer(1) - Order(N)
 } //end CustomerEntity

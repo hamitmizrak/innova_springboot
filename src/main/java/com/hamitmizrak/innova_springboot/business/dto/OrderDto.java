@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 // LOMBOK
 @Getter
 @Setter
@@ -12,11 +14,11 @@ import lombok.Setter;
 //  Order(N) - Product(M)
 public class OrderDto extends BaseDto {
 
-    // FIRSTNAME
+    // NAME
     @NotEmpty(message = "{order.name.validation.constraints.NotNull.message}")
     private String name;
 
-    // LASTNAME
+    // PRICE
     @NotEmpty(message = "{order.code.validation.constraints.NotNull.message}")
     private String price;
 
@@ -32,6 +34,7 @@ public class OrderDto extends BaseDto {
     private CustomerDto compositionCustomerDto;
 
     // Order(N) - Product(M)
+    private List<ProductDto> compositionProductDtoList;
 
 } // end CustomerDto
 
