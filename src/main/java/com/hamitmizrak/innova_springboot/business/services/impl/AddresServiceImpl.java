@@ -14,6 +14,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -60,12 +62,54 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
     }
 
     ////////////////////////////////////////////////////////////////
-    // CRUD
+    // TRANSACTION
+    /*
+    propagation: İşlem yayılım seviyesini belirler. Varsayılan Propagation.REQUIRED'dır.
+    isolation: İşlem izolasyon seviyesini belirler. Varsayılan Isolation.DEFAULT'tır.
+    readOnly: İşlemin yalnızca okuma amaçlı olduğunu belirtir. Varsayılan false'dur.
+    timeout: İşlemin maksimum süresini (saniye cinsinden) belirtir. Varsayılan -1 (sınırsızdır).
+    rollbackFor: Hangi istisnalar için işlemin geri alınacağını belirtir.
+    noRollbackFor: Hangi istisnalar için işlemin geri alınmayacağını belirtir.
+    */
+    /*
+    @Transactional Özelliklerinin Açıklamaları
+    propagation (İşlem Yayılım Seviyesi):
+    REQUIRED (Varsayılan): Mevcut bir işlem varsa kullanır, yoksa yeni bir işlem başlatır.
+    REQUIRES_NEW: Her zaman yeni bir işlem başlatır.
+    MANDATORY: Mevcut bir işlem yoksa hata verir.
+    SUPPORTS: Mevcut bir işlem varsa kullanır, yoksa işlem başlatmaz.
+    NOT_SUPPORTED: İşlem başlatmaz, mevcut bir işlem varsa askıya alır.
+    NEVER: İşlem olmamalıdır, aksi halde hata verir.
+    NESTED: Ana işlemin içinde bir alt işlem oluşturur.
+
+    isolation (İşlem İzolasyon Seviyesi)
+    DEFAULT: Varsayılan izolasyon seviyesini kullanır.
+    READ_UNCOMMITTED: Kirli okuma yapabilir.
+    READ_COMMITTED: Kirli okumayı engeller.
+    REPEATABLE_READ: Tekrarlanabilir okuma sağlar.
+    SERIALIZABLE: Tam izolasyon sağlar, en yavaş ama en güvenli.
+
+    readOnly:
+    true: Veritabanında yalnızca okuma işlemlerine izin verir.
+    false: Yazma işlemleri de yapılabilir.
+
+    timeout:
+    İşlemin maksimum süresini belirtir. Süre aşılırsa işlem geri alınır.
+
+    rollbackFor ve noRollbackFor:
+    Hangi istisnalar için işlem geri alınsın veya alınmasın ayarlanabilir.
+     */
 
     // CREATE (Address)
-    // org.springframework.transaction
-    @Transactional //(propagation = ) // () // create, delete, update yani manipulation işlemlerin
-    @Override
+    // org.springframework.transaction => // create, delete, update yani manipulation işlemlerin
+    @Transactional(
+            propagation = Propagation.REQUIRED, // Varsayılan yayılım. İşlem varsa mevcut işlem kullanılır.
+            isolation = Isolation.READ_COMMITTED, // İzolasyon seviyesi: READ_COMMITTED
+            readOnly = false, // Yazma işlemi olduğu için false
+            timeout = 30, // Maksimum 30 saniyede işlem tamamlanmalı
+            rollbackFor = {Exception.class}, // Tüm istisnalar için rollback yapılır
+            noRollbackFor = {IllegalArgumentException.class} // IllegalArgumentException rollback yapmaz
+    )@Override
     public AddressDto objectServiceCreate(AddressDto addressDto) {
         AddressEntity addressEntityCreate =dtoToEntity(addressDto);
         // Not: Kayıt veya güncellemede ID içini set eder
@@ -98,7 +142,13 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
     }
 
     // UPDATE
-    @Transactional // create, delete, update yani manipulation işlemlerin
+    // UPDATE (Address)
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW, // Her zaman yeni bir işlem başlatır
+            isolation = Isolation.SERIALIZABLE, // En katı izolasyon seviyesi, yazma/yazma çakışmasını önler
+            timeout = 60, // Maksimum 60 saniye
+            rollbackFor = {Exception.class} // Tüm istisnalar için rollback
+    )
     @Override
     public AddressDto objectServiceUpdate(Long id, AddressDto addressDto) {
         // Öncelikle ilgili Adresi bulalım
@@ -128,7 +178,12 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
     }
 
     // DELETE
-    @Transactional // create, delete, update yani manipulation işlemlerin
+    // DELETE (Address)
+    @Transactional(
+            propagation = Propagation.MANDATORY, // Mutlaka mevcut bir işlem gerektirir
+            isolation = Isolation.READ_UNCOMMITTED, // Diğer işlemlerdeki geçici değişiklikler okunabilir
+            rollbackFor = {Exception.class} // Tüm istisnalar için rollback
+    )
     @Override
     public AddressDto objectServiceDelete(Long id) {
         // Öncelikle ilgili Adresi bulalım
