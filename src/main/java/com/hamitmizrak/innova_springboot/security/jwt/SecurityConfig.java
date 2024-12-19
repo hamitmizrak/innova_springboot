@@ -107,8 +107,39 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
-
-
-
 } // end SecurityFilterChain
 
+/*
+POST /api/auth/register HTTP/1.1
+Host: localhost:4444
+Content-Type: application/json
+Cookie: JSESSIONID=AA78393B236E5F44C5AECC68E9EC708E
+Content-Length: 49
+
+{
+  "username": "root",
+  "password": "root"
+}
+* */
+
+
+//jwt token al
+/*
+POST /api/auth/login HTTP/1.1
+Host: localhost:4444
+Content-Type: application/json
+Authorization: Basic cm9vdDpyb290
+Cookie: JSESSIONID=AA78393B236E5F44C5AECC68E9EC708E
+Content-Length: 53
+
+{
+  "username": "root",
+  "password": "root"
+
+}
+* */
+
+// jwt token ekle
+// Authorization => bearer token olsun
+// üste aldığımı buraya ekle
+// GET => http://localhost:4444/api/address/v1.0.0/find/1
