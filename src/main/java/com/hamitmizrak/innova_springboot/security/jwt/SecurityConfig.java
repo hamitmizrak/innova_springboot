@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -42,6 +43,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
@@ -61,6 +63,9 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/lib/**"));
     } //end webSecurityCustomizer
 
+
+// @Primary // Varsayılan Bean Seçimi Eğer birden fazla UserDetailsService bean'i varsa, bunlardan birini varsayılan olarak tanımlamalısınız.
+// Bunun için @Primary açıklamasını kullanabilirsiniz:
 
     // http://localhost:4444/
     // http://localhost:4444/h2-console/
@@ -89,7 +94,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 // Not: Eğer Database üzerinden kayıt istiyorsan jwtFilter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
                 // POSTMAN kullanabilmek için (Http Aç)
                 .httpBasic(Customizer.withDefaults())
@@ -101,6 +106,9 @@ public class SecurityConfig {
                 .logout().logoutUrl("/logout").invalidateHttpSession(true);
         return httpSecurity.build();
     }
+
+
+
 
 } // end SecurityFilterChain
 

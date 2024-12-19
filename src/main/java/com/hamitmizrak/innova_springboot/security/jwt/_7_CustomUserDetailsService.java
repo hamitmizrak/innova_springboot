@@ -3,6 +3,7 @@ package com.hamitmizrak.innova_springboot.security.jwt;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,7 @@ public class _7_CustomUserDetailsService implements UserDetailsService {
 
     // Injection
     private final _5_IUserRepository iUserRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
