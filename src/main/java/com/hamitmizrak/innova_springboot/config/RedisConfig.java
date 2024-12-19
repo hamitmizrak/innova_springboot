@@ -55,6 +55,25 @@ public class RedisConfig {
     }
 
     /**
+     * Default Cache Configuration - Özellikle kısa süreli cache kullanımları için.
+     */
+    @Bean
+    public RedisCacheConfiguration cacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(1)) // 1 dakikalık geçerlilik süresi
+                .disableCachingNullValues() // Null değerlerini cache’lemez
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    }
+
+    /*
+    Test İçin: AddressService yazdığım Redis için
+    // FIND BY ID (Address)
+    // REDIS : için aşağıdaki linktten çalışıp çalışmadığını bu linkten anlayabiliriz
+    // http://localhost:4444/api/address/v1.0.0/find/1
+    * */
+
+    /**
      * Cache Configuration - Cache prefix ekleme ve TTL (Time To Live) belirleme.
      */
    /* @Bean
@@ -66,6 +85,8 @@ public class RedisConfig {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }*/
+
+
 
     /**
      * RedisTemplate ile özel loglama ve transaction desteği.
@@ -93,23 +114,7 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    /**
-     * Default Cache Configuration - Özellikle kısa süreli cache kullanımları için.
-     */
-    @Bean
-    public RedisCacheConfiguration cacheConfiguration() {
-        return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1)) // 1 dakikalık geçerlilik süresi
-                .disableCachingNullValues() // Null değerlerini cache’lemez
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-    }
+
 } //end RedisConfig
 
 
-/*
-Test İçin: AddressService yazdığım Redis için
-// FIND BY ID (Address)
-// REDIS : için aşağıdaki linktten çalışıp çalışmadığını bu linkten anlayabiliriz
-// http://localhost:4444/api/address/v1.0.0/find/1
-* */

@@ -31,7 +31,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         //SecurityAutoConfiguration.class,
         org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration.class,
-        //RedisAutoConfiguration.class, // Eğer Redis bağımlılığını kaldırmak istemiyorsanız ancak Redis yapılandırmasını devre dışı bırakmak istiyorsanız
+
+        // Eğer Redis bağımlılığını kaldırmak istemiyorsanız ancak Redis yapılandırmasını devre dışı bırakmak istiyorsanız
+        //RedisAutoConfiguration.class,
   }
 )
 //@SpringBootApplication

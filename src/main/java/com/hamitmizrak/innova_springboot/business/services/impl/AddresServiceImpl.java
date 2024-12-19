@@ -91,7 +91,7 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
     @Override
     public AddressDto objectServiceFindById(Long id) {
         //REDIS
-        System.err.println("Redis başlamadan önce ilk burası çalışacak ancak redis çalışıyorsa bunu cache dakikası bitene kadar veya flush yapana kadar görmeyeceksiniz "+id);
+        System.err.println("Redis başlamadan önce ilk burası çalışacak ancak redis çalışıyorsa bunu redis cache zamanı(1dakika) bitene kadar veya flush yapana kadar görmeyeceksiniz "+id);
         return iAddressRepository.findById(id)
                 .map(AddressMapper::AddressEntityToAddressDto)
                 .orElseThrow(()-> new _404_NotFoundException(id+" nolu veri yoktur"));
@@ -148,11 +148,9 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
 
     ////////////////////////////////////////////////////////////////
     // PAGE & SORT
-
-
     // PAGE
     // import org.springframework.cache.annotation.Cacheable;
-    // REDIS :
+    // REDIS : key için eğer parametreler varsa ekleyelim.
     @Cacheable(value = "addressPaginationCache", key = "#currentPage + '-' + #pageSize")
     @Override
     public Page<AddressDto> objectServicePagination(int currentPage, int pageSize) {
