@@ -74,7 +74,7 @@ public class CustomerServiceImpl implements ICustomerService<CustomerDto, Custom
     public List<CustomerDto> objectServiceList() {
         List<CustomerEntity> customerEntities = iCustomerRepository.findAll();
         return customerEntities.stream()
-                //.sorted(Comparator.comparing((temp)-> temp.getCustomerDetailsEmbedable().getCity()))
+                //.sorted(Comparator.comparing((temp)-> temp.getName()))
                 //.map((temp)->CustomerMapper.CustomerEntityToCustomerDto(temp)) // 1.YOL (Lambda Expression)
                 .map(CustomerMapper::CustomerEntityToCustomerDto)                // 2.YOL (Method Referances)
                 .collect(Collectors.toList());
