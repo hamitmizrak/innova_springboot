@@ -542,7 +542,7 @@ Bu açıklamalar, `@Id`, `@GeneratedValue` ve `@SequenceGenerator` anotasyonlar�
 ```
 ---
 
-# THY - BT Akademi Spring Boot - Redis - Dockerize
+# - Redis - Dockerize
 [GitHub](https://github.com/hamitmizrak/thy_springboot_redis)
 ---
 
