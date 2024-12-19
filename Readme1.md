@@ -1661,8 +1661,216 @@ Sonuç olarak, doğru seçimi yapmak için uygulamanızın gereksinimlerini göz
 
 ```
 ---
-### **Spring Boot `@Transactional` Anotasyonu**
 
+### Spring Data Transaction Nedir?
+
+Spring Data'daki **transaction** (işlem) mekanizması, bir veya birden fazla veri tabanı işleminin **tek bir mantıksal birim** olarak yürütülmesini sağlar. Bu, işlemler arasında **tutarlılığı** sağlamak ve işlemler sırasında oluşabilecek hatalardan sonra sistemi önceki güvenli durumuna geri döndürmek için kullanılır.
+
+**ACID** (Atomicity, Consistency, Isolation, Durability) prensiplerini sağlayarak bir işlem sırasında tüm adımların ya tamamen gerçekleştirilmesini ya da hiçbirinin gerçekleştirilmemesini garanti eder. Spring Data, bu işlemleri kolaylaştırmak için Spring Framework'ün **transaction management** yeteneklerinden yararlanır.
+
+---
+
+### Transaction Kavramının Önemi
+
+Bir uygulama veri tabanı işlemleri gerçekleştirirken, aşağıdaki durumlarla karşılaşabilir:
+
+1. **Atomicity (Bütünlük)**: Bir işlem ya tamamen gerçekleştirilir ya da hiç gerçekleştirilmez. Örneğin, bir kullanıcı hesabından para transferi yapılırken, hem para çekme hem de yatırma işlemleri başarılı olmalıdır.
+
+2. **Consistency (Tutarlılık)**: İşlem öncesi ve sonrası veri tabanı tutarlı bir durumda olmalıdır. Eğer bir hata oluşursa, sistem eski tutarlı durumuna döndürülmelidir.
+
+3. **Isolation (Yalıtım)**: Bir işlem diğer işlemlerden bağımsız olarak çalışmalıdır. Paralel çalışan işlemler birbirini etkilememelidir.
+
+4. **Durability (Kalıcılık)**: Bir işlem tamamlandıktan sonra, sonuçları kalıcı olarak saklanmalıdır ve sistem çökse bile veriler kaybolmamalıdır.
+
+Bu prensiplerin uygulanması, **Spring Data**'nın sağladığı transaction yönetimiyle sağlanır.
+
+---
+
+### Spring Transaction Yönetimi Türleri
+
+Spring Framework, **programmatic** (programlama ile) ve **declarative** (bildirimsel) olmak üzere iki tür transaction yönetimi sağlar.
+
+#### 1. **Programmatic Transaction Management**
+Transaction yönetimi kod içinde manuel olarak yapılır. Bu yaklaşım genellikle daha az tercih edilir çünkü kodun karmaşıklığını artırabilir. Örnek:
+
+```java
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+public void manualTransaction() {
+    TransactionDefinition def = new DefaultTransactionDefinition();
+    TransactionStatus status = transactionManager.getTransaction(def);
+    try {
+        // Veri tabanı işlemleri
+        transactionManager.commit(status);
+    } catch (Exception e) {
+        transactionManager.rollback(status);
+    }
+}
+```
+
+#### 2. **Declarative Transaction Management**
+Transaction yönetimi, **@Transactional** gibi anotasyonlar kullanılarak yapılır. Bu yaklaşım, kodu sade ve anlaşılır kıldığı için daha yaygındır.
+
+```java
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class ExampleService {
+
+    @Transactional
+    public void performTransaction() {
+        // Veri tabanı işlemleri
+    }
+}
+```
+
+---
+
+### Spring Data ve @Transactional
+
+Spring Data, transaction yönetimini kolaylaştırmak için **@Transactional** anotasyonunu kullanır. Bu anotasyon, bir methodun veya sınıfın transaction içinde çalışacağını belirtir.
+
+#### **@Transactional Özellikleri**
+
+**1. Scope (Kapsam):**
+- **Method seviyesinde:** Bir metoda transaction uygulanır.
+- **Class seviyesinde:** Tüm class'a uygulanır.
+
+**2. Propagation (Yayılma):**
+Transaction'un mevcut bir transaction ile nasıl bir ilişki kuracağını belirtir. Örnekler:
+- **REQUIRED (Varsayılan):** Mevcut bir transaction varsa onu kullanır; yoksa yeni bir tane oluşturur.
+- **REQUIRES_NEW:** Her zaman yeni bir transaction oluşturur.
+- **MANDATORY:** Mevcut bir transaction olması zorunludur; aksi halde hata fırlatır.
+- **NESTED:** Mevcut transaction içinde bir alt transaction oluşturur.
+
+**3. Isolation (Yalıtım):**
+Transaction'un diğer işlemlerden nasıl yalıtılacağını belirtir. Değerleri:
+- **READ_UNCOMMITTED:** Diğer işlemler tarafından henüz tamamlanmamış (uncommitted) değişiklikler görülebilir.
+- **READ_COMMITTED:** Yalnızca tamamlanmış (committed) değişiklikler görülebilir.
+- **REPEATABLE_READ:** Aynı veri iki kez okunduğunda aynı sonucu döndürür.
+- **SERIALIZABLE:** Tam yalıtım sağlar ve işlemler sırayla yürütülür.
+
+**4. Rollback Rules (Geri Alma Kuralları):**
+Hangi durumlarda işlemin geri alınacağını belirtir:
+- Varsayılan olarak, `RuntimeException` ve türevlerinde rollback yapılır.
+- `CheckedException`'lar rollback tetiklemez.
+
+#### Örnek Kullanım:
+```java
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+public void updateAccountBalance(Long accountId, Double amount) {
+    // Birden fazla veri tabanı işlemi
+    accountRepository.debit(accountId, amount);
+    accountRepository.credit(accountId, amount);
+}
+```
+
+---
+
+### Spring Data ile Transaction Yönetimi
+
+Spring Data, aşağıdaki özellikler sayesinde transaction yönetimini entegre bir şekilde sağlar:
+
+#### 1. **Repository Seviyesinde Transaction**
+Spring Data Repository'leri, çoğunlukla transaction desteğiyle gelir. Varsayılan olarak, tüm CRUD işlemleri (save, delete, update) transaction içinde çalışır.
+
+```java
+@Repository
+public interface AccountRepository extends JpaRepository<Account, Long> {
+    @Modifying
+    @Transactional
+    @Query("UPDATE Account a SET a.balance = a.balance + :amount WHERE a.id = :id")
+    void updateBalance(@Param("id") Long id, @Param("amount") Double amount);
+}
+```
+
+#### 2. **Custom Repository Transaction**
+Kendi özel sorgularınızı yazarken transaction'ı explicit olarak belirtmek gerekebilir.
+
+```java
+@Service
+public class CustomService {
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Transactional
+    public void transferFunds(Long fromAccountId, Long toAccountId, Double amount) {
+        accountRepository.debit(fromAccountId, amount);
+        accountRepository.credit(toAccountId, amount);
+    }
+}
+```
+
+---
+
+### Transaction Rollback ve Hata Yönetimi
+
+#### Rollback Durumları
+- Spring Data, bir **RuntimeException** veya **Error** fırlatıldığında otomatik olarak rollback yapar.
+- Eğer **CheckedException** için rollback yapmak istenirse, `rollbackFor` özelliği kullanılmalıdır.
+
+```java
+@Transactional(rollbackFor = CustomCheckedException.class)
+public void performTransaction() throws CustomCheckedException {
+    // İşlemler
+}
+```
+
+#### Rollback Yapmadan Devam Etmek
+Bazı durumlarda bir hata olsa bile transaction’un devam etmesi istenebilir. Bunun için `noRollbackFor` özelliği kullanılır.
+
+```java
+@Transactional(noRollbackFor = CustomException.class)
+public void performTransactionWithNoRollback() {
+    // İşlemler
+}
+```
+
+---
+
+### Transaction ile En Sık Karşılaşılan Hatalar
+
+1. **LazyInitializationException:**
+   Transaction dışında bir Lazy yüklenen ilişkiye erişilmeye çalışıldığında ortaya çıkar. Çözüm olarak, ilişkili nesneleri transaction içinde yüklemek gerekir.
+
+2. **Deadlock (Kilitlenme):**
+   Birden fazla işlem aynı kaynağa erişmeye çalıştığında oluşabilir. **Isolation Level**'lar doğru yapılandırılmalıdır.
+
+3. **Transaction yönetiminin devre dışı kalması:**
+   `@Transactional` doğru bir şekilde tanımlanmadığında, transaction çalışmaz. Örneğin, self-invocation (bir metodun kendi içinde başka bir transaction'lı metodu çağırması) durumunda transaction etkisiz hale gelebilir.
+
+---
+
+### Spring Transaction ile İlgili En İyi Uygulamalar
+
+1. **Transactional sınırlarını doğru belirlemek:**
+   Transaction kapsamını mümkün olduğunca dar tutarak performansı artırabilirsiniz.
+
+2. **Transaction propagation'ı dikkatli seçmek:**
+   Mevcut bir transaction'a bağımlı olup olmadığınıza bağlı olarak doğru `Propagation` değerini seçin.
+
+3. **Logging ve Monitoring:**
+   Transaction yönetimini izlemek için uygun loglama ve izleme araçları kullanın (örneğin, Spring Actuator).
+
+4. **İzolasyon seviyelerini dikkatli ayarlamak:**
+   Yüksek izolasyon seviyeleri performansı etkileyebilir. Minimum seviyede ihtiyacı karşılayacak bir yapı tercih edilmelidir.
+
+---
+
+### Sonuç
+
+Spring Data Transaction, veri tabanı işlemlerini güvenli, tutarlı ve performanslı bir şekilde gerçekleştirmek için güçlü bir mekanizma sunar. **@Transactional** anotasyonu ve Spring Framework'ün zengin transaction yönetim yetenekleri sayesinde, uygulamalarınızda veri bütünlüğünü korurken karmaşık işlemleri kolayca yönetebilirsiniz. Bu mekanizma, mikroservislerden monolitik yapılara kadar geniş bir yelpazede kullanılabilir.
+
+## Spring Transaction Devam
+```sh 
+
+```
+---
+### **Spring Boot `@Transactional` Anotasyonu**
 #### **Nedir?**
 `@Transactional`, Spring Framework'te bir metot veya sınıf üzerinde işlem (transaction) yönetimini etkinleştiren bir anotasyondur. Veritabanı işlemleri sırasında tutarlılığı sağlamak ve otomatik olarak **commit** veya **rollback** işlemlerini gerçekleştirmek için kullanılır.
 
