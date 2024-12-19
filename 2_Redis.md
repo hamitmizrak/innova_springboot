@@ -186,6 +186,10 @@ sudo apt update
 sudo apt install redis-server
 ```
 
+## NOT:
+java.net.ConnectException: Connection refused: no further information
+Eğer bu hatı alıyorsanız Redis'i start yapmamışsınız demektir
+
 #### Redis’i Başlatma ve Durum Kontrolü
 Redis hizmetini başlatmak için:
 ```bash

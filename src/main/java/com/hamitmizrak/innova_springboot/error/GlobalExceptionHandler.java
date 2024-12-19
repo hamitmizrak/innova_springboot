@@ -8,7 +8,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+// @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    // Eğer bir global hata işleyici kullanıyorsanız (@RestControllerAdvice veya @ControllerAdvice),
+    // Actuator endpoint'lerini bu işleyiciden hariç tutun.
+    /*
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        // Actuator endpoint'lerini hariç tutun
+        if (e.getMessage().contains("actuator")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }*/
 
     // NullPointerException
     @ExceptionHandler(NullPointerException.class)
