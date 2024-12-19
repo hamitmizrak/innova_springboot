@@ -3,8 +3,11 @@ package com.hamitmizrak.innova_springboot.runner;
 
 import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
 import com.hamitmizrak.innova_springboot.business.dto.CustomerDto;
+import com.hamitmizrak.innova_springboot.business.dto.OrderDto;
+import com.hamitmizrak.innova_springboot.business.dto.ProductDto;
 import com.hamitmizrak.innova_springboot.business.services.interfaces.IAddressService;
 import com.hamitmizrak.innova_springboot.business.services.interfaces.ICustomerService;
+import com.hamitmizrak.innova_springboot.business.services.interfaces.IOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +30,7 @@ public class _1_DataSet implements CommandLineRunner {
     // Injection
     private final IAddressService iAddressService;
     private final ICustomerService iCustomerService;
+    private final IOrderService iOrderService;
 
     // Address Random Create
     private List<AddressDto> addressRandomSave(){
@@ -48,8 +53,10 @@ public class _1_DataSet implements CommandLineRunner {
         return addressDtoList;
     }
 
+    /////////////////////////////////////////////////////
+    // RELATION
     // Address Single Create
-    private AddressDto addressSave(){
+    private AddressDto relationaAddressSave(){
         AddressDto addressDto= new AddressDto();
         addressDto.setDoorNumber("door number");
         addressDto.setStreet("street");
@@ -63,10 +70,10 @@ public class _1_DataSet implements CommandLineRunner {
     }
 
     // Address Single Create
-    private CustomerDto customerSave(){
+    private CustomerDto relationCustomerSave(){
 
         // AddressDto
-        AddressDto addressDto= addressSave();
+        AddressDto addressDto= relationaAddressSave();
 
         // CustomerDto
         CustomerDto customerDto= new CustomerDto();
@@ -78,21 +85,61 @@ public class _1_DataSet implements CommandLineRunner {
         customerDto.setCompositionAddressDto(addressDto);
 
         // Customer Save
-        iCustomerService.objectServiceCreate(customerDto);
-        System.out.println(customerDto);
-
+        // iCustomerService.objectServiceCreate(customerDto);
+        // System.out.println(customerDto);
         return customerDto;
     }
 
-    // Product
+    // Products
+    private ProductDto[] relationProductSave(){
+        ProductDto[] productDtoList= new ProductDto[2];
+
+        // Ürün-1
+        ProductDto productDto1= ProductDto.builder()
+                .name("Masaüstü")
+                .trade("xyz")
+                .notes("i9")
+                .build();
+
+        // Ürün-2
+        ProductDto productDto2= ProductDto.builder()
+                .name("Laptop")
+                .trade("mnp")
+                .notes("i7")
+                .build();
+        return new ProductDto[]{productDto1,productDto2};
+    }
 
     // Order
+    private void relationOrderSave(){
+        System.out.println("###############################");
+        System.out.println("Order Verileri Kaydediliyor....");
+
+        // Sipariş -1
+        OrderDto orderDto1=OrderDto.builder()
+                .name("Malatya")
+                .price("20")
+                .notes("order notes")
+                .build();
+
+        // Composition
+        // Order'un içine Müşteri Ekle NOT: Customer içinde de zaten Address vardı.
+        orderDto1.setCompositionCustomerDto(relationCustomerSave());
+
+        // Order'un içine Sipariş Ekle
+        orderDto1.setCompositionProductDtoList(Arrays.asList(relationProductSave()[0],relationProductSave()[1]));
+
+        // Order Database Kaydet
+        OrderDto orderDtoSave= (OrderDto) iOrderService.objectServiceCreate(orderDto1);
+        System.out.println(orderDtoSave);
+    }
 
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Project Data set -1 ");
         log.info("Project Data set -1 ");
         //addressSave();
-        customerSave();
+        //relationCustomerSave();
+        relationOrderSave();
     }
 }

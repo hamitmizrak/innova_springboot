@@ -1,12 +1,14 @@
 package com.hamitmizrak.innova_springboot.business.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 // LOMBOK
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 
 //  Product(M)- Order(N)
 public class ProductDto extends BaseDto {
