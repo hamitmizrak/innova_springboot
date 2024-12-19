@@ -120,7 +120,7 @@ public class AddresServiceImpl implements IAddressService<AddressDto, AddressEnt
 
         /*
         save: Veritabanına yazma işlemlerinin toplu olarak yapılmasını tercih ediyorsanız kullanın.
-saveAndFlush: Veritabanına hemen yazma ihtiyacı olan durumlarda (örneğin, başka bir işlem kaydedilen veriyi hemen kullanacaksa) kullanın.
+        saveAndFlush: Veritabanına hemen yazma ihtiyacı olan durumlarda (örneğin, başka bir işlem kaydedilen veriyi hemen kullanacaksa) kullanın.
         */
         //addressEntityFindByUpdate=iAddressRepository.save(addressEntityFindByUpdate);       // 1.YOL
         addressEntityFindByUpdate=iAddressRepository.saveAndFlush(addressEntityFindByUpdate); // 2.YOL

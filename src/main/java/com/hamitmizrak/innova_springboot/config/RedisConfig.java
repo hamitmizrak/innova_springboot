@@ -57,7 +57,7 @@ public class RedisConfig {
     /**
      * Cache Configuration - Cache prefix ekleme ve TTL (Time To Live) belirleme.
      */
-    @Bean
+   /* @Bean
     public RedisCacheConfiguration customCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .prefixCacheNameWith("customPrefix::") // Cache isimlerine özel bir prefix ekler
@@ -65,7 +65,7 @@ public class RedisConfig {
                 .disableCachingNullValues() // Null değerleri cache’lemez
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-    }
+    }*/
 
     /**
      * RedisTemplate ile özel loglama ve transaction desteği.
