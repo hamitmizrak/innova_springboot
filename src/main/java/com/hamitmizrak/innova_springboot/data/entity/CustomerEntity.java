@@ -1,9 +1,6 @@
 package com.hamitmizrak.innova_springboot.data.entity;
 
-import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
-import com.hamitmizrak.innova_springboot.data.embedded.AddresseEntityDetailsEmbedable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 

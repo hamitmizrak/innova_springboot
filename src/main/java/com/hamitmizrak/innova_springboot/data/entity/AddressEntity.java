@@ -32,11 +32,11 @@ indexes = {
 @Table(
         name = "addreseses",
         schema = "public",
-        catalog = "blog",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"state"}),
-        indexes = {
-                @Index(name="idx_address_city",columnList = "city",unique = true)
-        }
+        catalog = "blog"
+        //uniqueConstraints = @UniqueConstraint(columnNames = {"state"}),
+        //indexes = {
+        //        @Index(name="idx_address_city",columnList = "city",unique = true)
+        //}
 )
 // Address
 public class AddressEntity extends BaseEntity{

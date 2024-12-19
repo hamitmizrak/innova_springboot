@@ -1,6 +1,9 @@
 package com.hamitmizrak.innova_springboot.runner;
 
 
+import com.hamitmizrak.innova_springboot.aspect.AuditLogEntity;
+import com.hamitmizrak.innova_springboot.aspect.AuditingAspect;
+import com.hamitmizrak.innova_springboot.aspect.IAuditLogRepository;
 import com.hamitmizrak.innova_springboot.business.dto.AddressDto;
 import com.hamitmizrak.innova_springboot.business.dto.CustomerDto;
 import com.hamitmizrak.innova_springboot.business.dto.OrderDto;
@@ -14,10 +17,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 // LOMBOK
 @Log4j2
@@ -31,6 +32,12 @@ public class _1_DataSet implements CommandLineRunner {
     private final IAddressService iAddressService;
     private final ICustomerService iCustomerService;
     private final IOrderService iOrderService;
+
+    // AOP
+    private final IAuditLogRepository iAuditLogRepository;
+    private final AuditingAspect auditingAspect;
+    // AOP
+    List<AuditLogEntity> auditLogs = new ArrayList<>();
 
     // Address Random Create
     private List<AddressDto> addressRandomSave(){
@@ -66,6 +73,9 @@ public class _1_DataSet implements CommandLineRunner {
         addressDto.setZipCode("zip code");
         addressDto.setDescription("description");
         addressDto.setAddressQrCode(UUID.randomUUID().toString());
+
+        // AOP Save
+        auditLogs.add(new AuditLogEntity("AddressEntity", "CREATE", "HamitM", new Date()));
         return addressDto;
     }
 
@@ -87,6 +97,9 @@ public class _1_DataSet implements CommandLineRunner {
         // Customer Save
         // iCustomerService.objectServiceCreate(customerDto);
         // System.out.println(customerDto);
+
+        // AOP Save
+        auditLogs.add(new AuditLogEntity("CustomerEntity", "CREATE", "HamitM", new Date()));
         return customerDto;
     }
 
@@ -107,6 +120,9 @@ public class _1_DataSet implements CommandLineRunner {
                 .trade("mnp")
                 .notes("i7")
                 .build();
+
+        // AOP Save
+        // auditLogs.add(new AuditLogEntity("ProductEntity", "CREATE", "HamitM", new Date()));
         return new ProductDto[]{productDto1,productDto2};
     }
 
@@ -132,7 +148,12 @@ public class _1_DataSet implements CommandLineRunner {
         // Order Database Kaydet
         OrderDto orderDtoSave= (OrderDto) iOrderService.objectServiceCreate(orderDto1);
         System.out.println(orderDtoSave);
+
+        // AOP Save
+        auditLogs.add(new AuditLogEntity("ProductEntity", "CREATE", "HamitM", new Date()));
+        auditLogs.add(new AuditLogEntity("OrderEntity", "CREATE", "HamitM", new Date()));
     }
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -141,5 +162,9 @@ public class _1_DataSet implements CommandLineRunner {
         //addressSave();
         //relationCustomerSave();
         relationOrderSave();
+
+        // Toplu olarak Audit Logs kaydet
+        auditingAspect.logBatchAudit(auditLogs);
+        System.out.println("Tüm kayıtlar ve audit log'lar tamamlandı.");
     }
 }
