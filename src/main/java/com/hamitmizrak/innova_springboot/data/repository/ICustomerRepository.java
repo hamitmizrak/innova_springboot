@@ -75,27 +75,11 @@ findByNotesContaining: notes alanında belirli bir kelime içeren müşteriler b
     List<CustomerEntity> searchCustomersByNotes(@Param("keyword") String keyword);
 
     // 3. Adres bilgisine göre müşterileri getir
-    @Query("SELECT c FROM Customers c JOIN c.addressCustomerEntity a WHERE a.city = :city")
+    // Normal Kullanım
+    // @Query("SELECT c FROM Customers c JOIN c.addressCustomerEntity a WHERE a.city = :city")
+    // Embeddable oludğu için
+    @Query("SELECT c FROM Customers c JOIN c.addressCustomerEntity a WHERE a.addresseEntityDetailsEmbedable.city = :city")
     List<CustomerEntity> findCustomersByCity(@Param("city") String city);
 
-    ///////////////////////////////////////////////////////////////
-    // Native Query
-    /*
-    Doğrudan SQL kullanılarak yazılan sorgulardır.
-    Özellikler:
-    Veritabanına özel sorgular yazılabilir.
-    Performans kritik yerlerde tercih edilir.
-     */
-    // 1. Tüm müşterileri getir
-    @Query(value = "SELECT * FROM customers", nativeQuery = true)
-    List<CustomerEntity> findAllCustomersNative();
-
-    // 2. Belirli bir soyadı ile müşterileri getir
-    @Query(value = "SELECT * FROM customers WHERE lastname = :lastname", nativeQuery = true)
-    List<CustomerEntity> findCustomersByLastnameNative(@Param("lastname") String lastname);
-
-    // 3. Notlara göre arama yap
-    @Query(value = "SELECT * FROM customers WHERE notes LIKE %:keyword%", nativeQuery = true)
-    List<CustomerEntity> searchCustomersByNotesNative(@Param("keyword") String keyword);
 
 }
