@@ -3218,3 +3218,146 @@ Bu örnekler, veri tabanı sorgularını çeşitli şekillerde kullanmanıza ola
 - JPQL, Java varlıklarına dayalı SQL benzeri sorgular oluşturur,
 - Native Query ise doğrudan SQL kullanılarak daha karmaşık veya veri tabanına özel sorguların gerçekleştirilmesine olanak tanır.
 
+## Customer Örneği
+Aşağıda `Delivered Query`, `Named Query`, `JPQL`, ve `Native Query` hakkında açıklamalar ve her biri için en az üç örnek verilmiştir. Verilen kodlar, `CustomerEntity` ve `ICustomerRepository` sınıflarınıza uygun şekilde düzenlenmiştir.
+
+---
+
+### 1. **Delivered Query**
+Spring Data JPA'nın sağladığı otomatik sorgulardır. Yöntem adlarına göre sorgular otomatik olarak üretilir.
+
+**Özellikler:**
+- Sorgular otomatik olarak oluşturulur.
+- Kod yazımı hızlıdır.
+
+**Örnekler:**
+
+```java
+@Repository
+public interface ICustomerRepository extends JpaRepository<CustomerEntity, Long> {
+
+    // 1. İlk adı verilen bir müşteriyi bul
+    CustomerEntity findByFistname(String firstname);
+
+    // 2. Soyadı belirli bir kelimeyle başlayan müşterileri listele
+    List<CustomerEntity> findByLastnameStartingWith(String prefix);
+
+    // 3. Notları belirli bir kelime içeren müşterileri listele
+    List<CustomerEntity> findByNotesContaining(String keyword);
+}
+```
+
+**Açıklama:**
+- `findByFistname`: `fistname` alanında eşleşen müşteri döner.
+- `findByLastnameStartingWith`: Belirli bir harf dizisiyle başlayan `lastname` değerleri aranır.
+- `findByNotesContaining`: `notes` alanında belirli bir kelime içeren müşteriler bulunur.
+
+---
+
+### 2. **Named Query**
+`@NamedQuery` anotasyonu ile tanımlanan statik sorgulardır.
+
+**Özellikler:**
+- Sorgular doğrudan entitelerde tanımlanır.
+- Tekrarlanabilir ve sabittir.
+
+**Örnekler:**
+
+`CustomerEntity.java` dosyasına ekleyin:
+```java
+@NamedQueries({
+    @NamedQuery(name = "CustomerEntity.findAllCustomers", query = "SELECT c FROM Customers c"),
+    @NamedQuery(name = "CustomerEntity.findByLastname", query = "SELECT c FROM Customers c WHERE c.lastname = :lastname"),
+    @NamedQuery(name = "CustomerEntity.findWithNotes", query = "SELECT c FROM Customers c WHERE c.notes LIKE :notes")
+})
+@Entity
+@Table(name = "customers")
+public class CustomerEntity extends BaseEntity {
+    // ...
+}
+```
+
+`ICustomerRepository.java` dosyasına ekleyin:
+```java
+@Repository
+public interface ICustomerRepository extends JpaRepository<CustomerEntity, Long> {
+    // 1. Tüm müşterileri getir
+    List<CustomerEntity> findAllCustomers();
+
+    // 2. Belirli soyadı olan müşteriyi getir
+    List<CustomerEntity> findByLastname(String lastname);
+
+    // 3. Notlarda belirli bir ifadeyi içeren müşterileri getir
+    List<CustomerEntity> findWithNotes(String notes);
+}
+```
+
+---
+
+### 3. **JPQL**
+Java Persistence Query Language (JPQL) kullanılarak yazılan dinamik sorgulardır.
+
+**Özellikler:**
+- Entite üzerine çalışır, SQL'den soyutlanmıştır.
+- Daha okunaklı ve güvenlidir.
+
+**Örnekler:**
+
+```java
+@Repository
+public interface ICustomerRepository extends JpaRepository<CustomerEntity, Long> {
+
+    // 1. Belirli bir soyadı ile müşterileri listele
+    @Query("SELECT c FROM Customers c WHERE c.lastname = :lastname")
+    List<CustomerEntity> findCustomersByLastname(@Param("lastname") String lastname);
+
+    // 2. Notlara göre arama yap
+    @Query("SELECT c FROM Customers c WHERE c.notes LIKE %:keyword%")
+    List<CustomerEntity> searchCustomersByNotes(@Param("keyword") String keyword);
+
+    // 3. Adres bilgisine göre müşterileri getir
+    @Query("SELECT c FROM Customers c JOIN c.addressCustomerEntity a WHERE a.city = :city")
+    List<CustomerEntity> findCustomersByCity(@Param("city") String city);
+}
+```
+
+---
+
+### 4. **Native Query**
+Doğrudan SQL kullanılarak yazılan sorgulardır.
+
+**Özellikler:**
+- Veritabanına özel sorgular yazılabilir.
+- Performans kritik yerlerde tercih edilir.
+
+**Örnekler:**
+
+```java
+@Repository
+public interface ICustomerRepository extends JpaRepository<CustomerEntity, Long> {
+
+    // 1. Tüm müşterileri getir
+    @Query(value = "SELECT * FROM customers", nativeQuery = true)
+    List<CustomerEntity> findAllCustomersNative();
+
+    // 2. Belirli bir soyadı ile müşterileri getir
+    @Query(value = "SELECT * FROM customers WHERE lastname = :lastname", nativeQuery = true)
+    List<CustomerEntity> findCustomersByLastnameNative(@Param("lastname") String lastname);
+
+    // 3. Notlara göre arama yap
+    @Query(value = "SELECT * FROM customers WHERE notes LIKE %:keyword%", nativeQuery = true)
+    List<CustomerEntity> searchCustomersByNotesNative(@Param("keyword") String keyword);
+}
+```
+
+---
+
+### Özet Karşılaştırma
+| **Tip**            | **Kullanım Durumu**                         | **Özellikler**                                        |
+|---------------------|---------------------------------------------|------------------------------------------------------|
+| Delivered Query     | Basit sorgular için hızlı ve kolay çözüm.   | Metot adlarına göre otomatik sorgu oluşturulur.      |
+| Named Query         | Sabit ve sık kullanılan sorgular.           | Sorgular entite üzerinde tanımlanır.                |
+| JPQL                | Dinamik sorgular ve entite tabanlı işlemler.| SQL'den bağımsız, entite odaklı sorgular.           |
+| Native Query        | Performans kritik veya özel sorgular.       | Doğrudan SQL sorguları kullanılır.                  |
+
+Bu dört yöntemin farklı durumlarda nasıl uygulanacağını ve her birinin avantajlarını açıkladık. Daha fazla örnek isterseniz belirtin!

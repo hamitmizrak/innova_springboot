@@ -13,6 +13,14 @@ import lombok.Setter;
 //@NoArgsConstructor
 //@Builder
 
+
+// @NamedQuery anotasyonu ile tanımlanan statik sorgulardır.
+@NamedQueries({
+        @NamedQuery(name = "CustomerEntity.findAllCustomers", query = "SELECT c FROM Customers c"),
+        @NamedQuery(name = "CustomerEntity.findByLastname", query = "SELECT c FROM Customers c WHERE c.lastname = :lastname"),
+        @NamedQuery(name = "CustomerEntity.findWithNotes", query = "SELECT c FROM Customers c WHERE c.notes LIKE :notes")
+})
+
 // Entity
 @Entity(name = "Customers")
 @Table(name = "customers")
