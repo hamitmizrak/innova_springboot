@@ -3,7 +3,7 @@
 ---
 
 ## Git
-```sh 
+ 
 git clone https://github.com/hamitmizrak/innova_springboot.git
 
 git init
@@ -21,7 +21,7 @@ git pull origin master
 ---
 
 ## Permalink
-```sh
+
     http://localhost:4444
     http://localhost:4444/h2-console
     http://localhost:4444/swagger-ui/index.html
@@ -30,7 +30,7 @@ git pull origin master
 ---
 
 ## Version
-```sh 
+ 
 git -v
 mvn -v
 java --version
@@ -41,7 +41,7 @@ docker-compose version
 ---
 
 ## Git Init
-```sh 
+ 
 git init
 git add .
 git commit -m "spring boot init"
@@ -53,18 +53,20 @@ git clone https://github.com/hamitmizrak/
 ---
 
 ## Git Codes
-```sh
+
 git status
 git logs
 
 ```
 
-
 ## Redis Nedir ?
-```sh 
+ 
 ### Redis Nedir?
 
-Redis (Remote Dictionary Server), **açık kaynaklı**, **hafızada çalışan** (in-memory) ve **anahtar-değer (key-value)** yapısında bir veri deposudur. Redis, performansı, esnekliği ve zengin veri yapılarıyla diğer veri depolama çözümlerinden ayrılır. 2009 yılında Salvatore Sanfilippo tarafından geliştirilmiştir ve günümüzde birçok uygulamada **veritabanı**, **önbellek** (cache) ve **mesaj kuyruğu** (message broker) olarak kullanılır.
+Redis (Remote Dictionary Server), **açık kaynaklı**, **hafızada çalışan** (in-memory) ve **anahtar-değer (key-value)** yapısında bir veri deposudur. 
+Redis, performansı, esnekliği ve zengin veri yapılarıyla diğer veri depolama çözümlerinden ayrılır. 
+2009 yılında Salvatore Sanfilippo tarafından geliştirilmiştir ve günümüzde birçok uygulamada 
+**veritabanı**, **önbellek** (cache) ve **mesaj kuyruğu** (message broker) olarak kullanılır.
 
 Redis'in temel özellikleri ve avantajlarını anlamak için detaylı bir inceleme yapalım.
 
@@ -73,7 +75,9 @@ Redis'in temel özellikleri ve avantajlarını anlamak için detaylı bir incele
 ### Redis’in Temel Özellikleri
 
 #### 1. **Hafızada Çalışma (In-Memory)**
-Redis, tüm veriyi RAM’de tutar ve işlemlerini buradan gerçekleştirir. Bu, **çok yüksek hızlarda okuma/yazma** işlemleri yapılmasını sağlar. Redis'in bu özelliği onu yüksek performans gerektiren uygulamalarda vazgeçilmez bir araç haline getirir.
+Redis, tüm veriyi RAM’de tutar ve işlemlerini buradan gerçekleştirir. 
+Bu, **çok yüksek hızlarda okuma/yazma** işlemleri yapılmasını sağlar. 
+Redis'in bu özelliği onu yüksek performans gerektiren uygulamalarda vazgeçilmez bir araç haline getirir.
 
 #### 2. **Zengin Veri Yapıları**
 Redis, basit anahtar-değer çiftleriyle çalışmanın ötesinde aşağıdaki veri yapılarını da destekler:
@@ -92,7 +96,8 @@ Redis, verileri yalnızca RAM’de tutmakla kalmaz; aynı zamanda disk üzerine 
 - **AOF (Append-Only File)**: Her yazma işlemini diske ekleyerek veri kaybını minimuma indirir.
 
 #### 4. **Dağıtılmış Yapı (Cluster Support)**
-Redis, **cluster** modunda çalışarak verileri birden fazla sunucuya yayabilir. Bu sayede **yüksek erişilebilirlik** ve **ölçeklenebilirlik** sağlar.
+Redis, **cluster** modunda çalışarak verileri birden fazla sunucuya yayabilir. 
+Bu sayede **yüksek erişilebilirlik** ve **ölçeklenebilirlik** sağlar.
 
 #### 5. **Mesaj Kuyruğu (Pub/Sub)**
 Redis, **publish/subscribe (yayınlama/abonelik)** sistemiyle uygulamalar arasında gerçek zamanlı mesajlaşma sağlar.
@@ -104,7 +109,8 @@ Redis'teki tüm işlemler atomik yapıdadır; yani işlemler ya tamamen gerçekl
 Redis, özelleştirilmiş işlemleri gerçekleştirmek için **Lua** betikleri çalıştırabilir.
 
 #### 8. **Replication (Replikasyon)**
-Redis, birden fazla yedeği (slave) olan bir ana (master) yapı kurarak verilerin çoğaltılmasını sağlar. Bu, veri güvenliği ve yük dengeleme açısından önemlidir.
+Redis, birden fazla yedeği (slave) olan bir ana (master) yapı kurarak verilerin çoğaltılmasını sağlar. 
+Bu, veri güvenliği ve yük dengeleme açısından önemlidir.
 
 ---
 
@@ -116,7 +122,8 @@ Redis, veritabanı sorgularını hızlandırmak için en sık kullanılan veri �
 - Sık sorgulanan ürün verileri.
 
 #### 2. **Mesajlaşma ve Kuyruk Sistemleri**
-Redis'in Pub/Sub mekanizması, sistemler arasında gerçek zamanlı veri iletiminde kullanılır. Ayrıca **List** yapısı sayesinde kuyruk işlemleri gerçekleştirilir.
+Redis'in Pub/Sub mekanizması, sistemler arasında gerçek zamanlı veri iletiminde kullanılır. 
+Ayrıca **List** yapısı sayesinde kuyruk işlemleri gerçekleştirilir.
 
 #### 3. **Gerçek Zamanlı Analitik**
 Redis, hızlı okuma/yazma işlemleri sayesinde gerçek zamanlı analitik ve metriklerin tutulmasında kullanılır.
@@ -208,21 +215,24 @@ Redis, aşağıdaki rakipleriyle kıyaslandığında hız ve esneklik açısınd
 
 ### Sonuç
 
-Redis, yüksek hız, esneklik ve güçlü veri yapıları sunarak modern yazılım geliştirme süreçlerinde kritik bir rol oynar. Veritabanı olarak kullanılabilir, önbellek katmanı oluşturabilir ve mesaj kuyruğu olarak yapılandırılabilir. Hem küçük hem de büyük ölçekli uygulamalar için idealdir.
+Redis, yüksek hız, esneklik ve güçlü veri yapıları sunarak modern yazılım geliştirme süreçlerinde kritik bir rol oynar. 
+Veritabanı olarak kullanılabilir, önbellek katmanı oluşturabilir ve mesaj kuyruğu olarak yapılandırılabilir. 
+Hem küçük hem de büyük ölçekli uygulamalar için idealdir.
 
-Redis, performans ve esneklik gerektiren projelerde güçlü bir araçtır ve doğru kullanıldığında yazılım mimarisine büyük katkılar sağlar.
+Redis, performans ve esneklik gerektiren projelerde güçlü bir araçtır ve 
+doğru kullanıldığında yazılım mimarisine büyük katkılar sağlar.
 ```
 ---
 
 ## Redis Docker Compose
-```sh 
+ 
 # Projemizin sağlıklı çalışması için öncelikler redis servera kurulu olması gerekiyor
 docker container run --name spring_redis -p 6379:6379 -d redis
 ```
 ---
 
 ## Redis pom.xml
-```sh 
+ 
         <!-- #### REDIS #################################################  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -258,7 +268,7 @@ docker container run --name spring_redis -p 6379:6379 -d redis
 ---
 
 ## Redis Config
-```sh 
+ 
 package com.hamitmizrak.innova_springboot.config;
 
 import org.springframework.cache.annotation.EnableCaching;
@@ -294,7 +304,8 @@ Bu, aynı işlem içindeki birçok Redis komutunun atomik olarak çalıştırıl
 cacheConfiguration:
 Daha kısa süreli cache işlemleri için 1 dakikalık TTL belirler.
 Null değerlerin cache yapılmasını önler.
-Bu yapılandırma, Redis'i hem cache hem de transaction bazlı işlemler için esnek bir şekilde kullanmanıza olanak sağlar. Ayrıca, farklı kullanım senaryoları için ayrı RedisTemplate tanımları sağlanmıştır.
+Bu yapılandırma, Redis'i hem cache hem de transaction bazlı işlemler için esnek bir şekilde kullanmanıza olanak sağlar. 
+Ayrıca, farklı kullanım senaryoları için ayrı RedisTemplate tanımları sağlanmıştır.
 */
 
 
@@ -373,7 +384,7 @@ public class RedisConfig {
 
 
 ## Redis application.properties
-```sh 
+ 
 ######################################################################################
 ### REDIS CONFIG   ########################################################################
 ######################################################################################
@@ -390,7 +401,7 @@ spring.cache.type=redis
 
 
 ## Redis @Cacheable
-```sh 
+ 
       // FIND BY ID (Address)
     // REDIS : için aşağıdaki linktten çalışıp çalışmadığını bu linkten anlayabiliriz
     // http://localhost:4444/api/address/v1.0.0/find/1
@@ -410,7 +421,7 @@ spring.cache.type=redis
 
 
 ## Spring Boot
-```sh 
+ 
 
 ```
 ---
