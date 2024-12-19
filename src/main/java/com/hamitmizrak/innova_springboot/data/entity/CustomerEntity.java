@@ -39,6 +39,7 @@ public class CustomerEntity extends BaseEntity {
     // COMPOSITION
 
     // Customer(1) - Adress(1) NOT: Adres bilgilerine Customer üzerinden erişim sağlayacağım.
+    // Bundan dolayı @JoinColumn Customer içinde yazıyoruz
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id", unique = true)
     private AddressEntity addressCustomerEntity;
